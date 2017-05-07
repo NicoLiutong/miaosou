@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="animation" ></dbname>
+
+    <version value="3" ></version>
+
+    <list>
+        <mapping class="com.example.animation.Class.AnimationItem"/>
+        <mapping class="com.example.animation.Class.DownloadItem"/>
+        <mapping class="com.example.animation.Class.HistorySearch"/>
+        <mapping class="com.example.animation.Class.ComicItem"/>
+        <mapping class="com.example.animation.Class.ComicMessageItem"/>
+    </list>
+</litepal>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorPrimary">
+
+        <Button
+            android:id="@+id/downliad_back"
+            android:layout_gravity="center_vertical"
+            android:layout_width="50dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/back"
+            android:elevation="0dp"/>
+
+
+    <TextView
+    android:id="@+id/download_title"
+    android:layout_width="0dp"
+    android:layout_weight="1"
+    android:textSize="20sp"
+    android:textColor="@color/white"
+    android:gravity="center"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"/>
+
+    <View
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="10dp"
+ />
+
+</LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/download_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        android:id="@+id/button_layout"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/return_page"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="回头看看"
+            android:textSize="15sp"
+            android:background="@color/pink"
+            android:layout_weight="5"/>
+        <TextView
+            android:id="@+id/pages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textSize="15sp"/>
+        <Button
+            android:id="@+id/next_page"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:text="继续瞧瞧 (｀･ω･´ )"
+            android:textSize="15sp"
+            android:textColor="@color/white"
+            android:background="@color/blue"
+            android:layout_weight="5"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+android:id="@+id/linear_animationList"
+android:orientation="vertical"
+android:layout_width="match_parent"
+android:layout_height="match_parent">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期一"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/oneAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期二"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/twoAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期三"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/threeAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期四"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/fourAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期五"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/fiveAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期六"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/sixAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="星期天"
+    android:layout_marginBottom="3dp"
+    android:layout_marginTop="7dp"
+    android:gravity="center_vertical"
+    android:textColor="@color/red"
+    android:textSize="15sp"
+    />
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/sevenAnimation_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    />
+</LinearLayout>
