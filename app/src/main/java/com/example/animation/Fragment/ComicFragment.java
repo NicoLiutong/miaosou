@@ -35,7 +35,7 @@ import java.util.List;
 
 public class ComicFragment extends Fragment implements View.OnClickListener{
 
-    public static final String COMICURL = "comicurl";
+    public static final String COMICURL = "comicurl";   
 
     public static final String COMICREADURL = "comicreadurl";
 
@@ -129,7 +129,12 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
         techTextView.setOnClickListener(this);
         horrorTextView.setOnClickListener(this);
         randTextView.setOnClickListener(this);
-
+        /*初始化
+        1、將所有button的顏色初始化
+        2、初始化comicurl
+        3、將hot設置為默認點擊事件，並對其設置顏色
+        4、更新列表顯示
+        */
         setStartColor();
         comicUrl = hotUrl;
         hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
@@ -145,12 +150,12 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
         SQLiteDatabase db = Connector.getDatabase();
 
     }
-
+    //刷新列表，用於主界面的下拉刷新，先刪除所有comicType的數據，然後刷新數據
     public void refreshComic(){
             DataSupport.deleteAll(ComicItem.class,"comicType = ?",comicType);
             queryComic();
     }
-
+    //更新列表，初始化時更新列表，如果數據庫中存在數據直接更新顯示；否則從網頁查詢並顯示
     private void updateComicList(){
         if(DataSupport.where("comicType = ?",comicType).find(ComicItem.class).isEmpty()){
             queryComic();
@@ -159,7 +164,10 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             updateComic();
         }
     }
-
+    /*查詢數據
+    1、顯示ProgressDialog
+    2、查詢數據更新列表
+    */
     private void queryComic(){
         showProgressDialog();
 
@@ -210,7 +218,7 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             }
         }.start();
     }
-
+    //更新顯示
     private void updateComic(){
         comicItemList.clear();
         comicDate = DataSupport.where("comicType = ?",comicType).find(ComicItem.class);
