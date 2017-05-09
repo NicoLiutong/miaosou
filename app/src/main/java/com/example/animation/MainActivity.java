@@ -36,7 +36,7 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int ANIMATION = 0;
+    private static final int ANIMATION = 0;  
 
     private static final int COMIC = 1;
 
@@ -68,41 +68,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        imageUrl = setImageUrl();
+        imageUrl = setImageUrl();  //獲取圖片url
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.main_collapsingToolbar);
-        collapsingToolbar.setExpandedTitleColor(ContextCompat.getColor(MainActivity.this,R.color.colorAccent));
-        setSupportActionBar(toolbar);
+        collapsingToolbar.setExpandedTitleColor(ContextCompat.getColor(MainActivity.this,R.color.colorAccent));  //設置toolbar背景色
+        setSupportActionBar(toolbar);  //設置ActionBar
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         animationPageCardview = (CardView) findViewById(R.id.animation_pageCard);
         comicPageCardview = (CardView) findViewById(R.id.comic_pageCard);
         mainactivityToolbarImageview = (ImageView) findViewById(R.id.animation_toobarImage);
-        setToolbarImage();
-        setAnimationTitle();
+        setToolbarImage();  //設置ToolBarImage
+        setAnimationTitle();  //設置Title
 
-        final AnimationFragment animationFragment = new AnimationFragment();
-        final ComicFragment comicFragment = new ComicFragment();
-        animationPageSet(animationFragment);
+        final AnimationFragment animationFragment = new AnimationFragment();  //設置AnimationFragment
+        final ComicFragment comicFragment = new ComicFragment();  //設置comicFragment
+        animationPageSet(animationFragment);  //初始化為animationFragment
 
-        isInternetOk();
+        isInternetOk();  //判斷網絡是否打開
 
-        animationPageCardview.setOnClickListener(new View.OnClickListener() {
+        animationPageCardview.setOnClickListener(new View.OnClickListener() {  //點擊animationPageCardview，調用animationPageSet
+                                                                               //1、設置button顏色和title 2、設置顯示的Fragment                                  
             @Override
             public void onClick(View v) {
                animationPageSet(animationFragment);
             }
         });
 
-        comicPageCardview.setOnClickListener(new View.OnClickListener() {
+        comicPageCardview.setOnClickListener(new View.OnClickListener() {      //點擊animationPageCardview，調用comicPageSet
+                                                                               //1、設置button顏色 2、設置顯示的Fragment
             @Override
             public void onClick(View v) {
                 comicPageSet(comicFragment);
             }
         });
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {  //下拉刷新，下拉先關掉顯示，判斷是ANIMATION還是COMIC刷新
+            //如果是ANIMATION刷新，則調用animationFragment裏的queryAnimation；否則調用comicFragment的refreshComic
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         floatingActionButton = (FloatingActionButton) findViewById(R.id.animation_search);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {    //搜索button，點擊進入搜索activity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this,SearchActivity.class);
@@ -129,13 +132,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) { //設置菜單欄
         getMenuInflater().inflate(R.menu.toolbar,menu);
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {   //菜單欄的點擊事件，點擊進入收藏activity
         switch (item.getItemId()){
             case R.id.my_favourity:
                 Intent intent = new Intent(MainActivity.this,MyFavourityActivity.class);
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void setAnimationTitle(){
+    private void setAnimationTitle(){   //設置title，獲取datename，如果有則將其設置為title；否則設置默認的
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         animationTitle = pref.getString("datename","");
         if(animationTitle == null){
@@ -156,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void animationPageSet(Fragment fragment){
+    private void animationPageSet(Fragment fragment){   //動漫頁面設置，先設置button顏色，設置顯示的Fragment，設置title，設置標籤
         animationPageCardview.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorAccent));
         //animationPageView.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.white));
         //animationPageView.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.blue));
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
         pagesName = ANIMATION;
     }
 
-    private void comicPageSet(Fragment fragment){
+    private void comicPageSet(Fragment fragment){   //漫畫頁面設置，先設置button顏色，設置顯示的Fragment，設置title，設置標籤
         animationPageCardview.setCardBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.colorPrimary));
         //animationPageView.setTextColor(ContextCompat.getColor(MainActivity.this,R.color.gray));
         //animationPageView.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.white));
@@ -180,14 +183,19 @@ public class MainActivity extends AppCompatActivity {
         pagesName = COMIC;
     }
 
-    private void replaceFragenment(Fragment fragment,String tag){
+    private void replaceFragenment(Fragment fragment,String tag){   //Fragment的更換，傳入Fragment和tag
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.fragment,fragment,tag);
         transaction.commit();
     }
-
-    public void isInternetOk(){
+    /*判斷網絡是否ok
+    1、獲取ConnectivityManager
+    2、獲取NetworkInfo
+    3、判斷是否有連接，沒有彈出對話框
+    4、對話框的確認button，點擊進入設置頁面
+    */
+    public void isInternetOk(){ 
         ConnectivityManager manger = (ConnectivityManager)
                 this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = manger.getActiveNetworkInfo();
@@ -212,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+    /* 
+    添加圖片
+    */
     private List<Integer> setImageUrl(){
         List<Integer> imageUrls = new ArrayList<>();
         imageUrls.add(R.drawable.img001);
@@ -260,7 +271,8 @@ public class MainActivity extends AppCompatActivity {
         imageUrls.add(R.drawable.img044);
         return imageUrls;
     }
-
+    /* 
+     設置toolbar顯示的image*/
     private void setToolbarImage(){
         Random random = new Random();
         int number = random.nextInt(imageUrl.size() - 1);
