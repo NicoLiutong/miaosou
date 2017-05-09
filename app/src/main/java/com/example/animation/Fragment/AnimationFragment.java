@@ -95,6 +95,7 @@ public class AnimationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.animation_list,container,false);
         linearAnimationList = (LinearLayout) view.findViewById(R.id.linear_animationList);
+        //對所有的recyclerview進行初始化
         oneRecyclerView = (RecyclerView) view.findViewById(R.id.oneAnimation_recycler);
         twoRecyclerView = (RecyclerView) view.findViewById(R.id.twoAnimation_recycler);
         threeRecyclerView = (RecyclerView) view.findViewById(R.id.threeAnimation_recycler);
@@ -162,6 +163,7 @@ public class AnimationFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //獲去SharePreference
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         /*
         oneRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -171,12 +173,14 @@ public class AnimationFragment extends Fragment {
         fiveRecyclerView.setItemAnimator(new DefaultItemAnimator());
         sixRecyclerView.setItemAnimator(new DefaultItemAnimator());
         sevenRecyclerView.setItemAnimator(new DefaultItemAnimator());*/
-
+        //獲取數據進行顯示
             handAnimation();
     }
 
 
-
+    /* 
+    如果沒有數據庫，進行查詢更新數據庫並顯示；否則直接從數據庫裏查詢顯示
+    */
     public void handAnimation(){
         if(! DataSupport.isExist(AnimationItem.class)){
             queryAnimation();
@@ -184,7 +188,11 @@ public class AnimationFragment extends Fragment {
           showAnimationList();
        }
     }
-
+    /*
+    1、設置ProgressDialog顯示
+    2、從忘了查詢數據，更新數據庫
+    3、回到主線程，關閉ProgressDialog，並更新顯示
+    */
     public void queryAnimation(){
         linearAnimationList.setVisibility(View.INVISIBLE);
             showProgressDialog();
