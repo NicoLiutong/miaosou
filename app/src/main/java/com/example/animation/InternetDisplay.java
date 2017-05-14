@@ -1,6 +1,7 @@
 package com.example.animation;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -54,7 +55,6 @@ public class InternetDisplay extends AppCompatActivity {
                 android.graphics.PorterDuff.Mode.SRC_IN);
 
         WebSettings settings = webView.getSettings();
-        //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
 
         //设置自适应屏幕，两者合用
         settings.setUseWideViewPort(true); //将图片调整到适合webview的大小
@@ -79,10 +79,32 @@ public class InternetDisplay extends AppCompatActivity {
         WebViewClient webViewClient = new WebViewClient() {
 
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-
-                return super.shouldOverrideUrlLoading(view, request);
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                Log.d("url",url);
+                if(url.split("\\:")[0].equals("magnet")){
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                }
+                super.onPageStarted(view, url, favicon);
             }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                /*String uri = request.getUrl().getScheme().trim();*/
+                //Log.d("uri","1111");
+                /*if(uri.split("\\:")[0].equals("magnet")){
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(webView.getUrl()));
+                    Log.d("uri",uri.split("\\:")[0]);
+                    startActivity(intent);
+                    return false;
+                }else {*/
+                    return super.shouldOverrideUrlLoading(view, request);
+                //}
+
+            }
+
 
         };
 
