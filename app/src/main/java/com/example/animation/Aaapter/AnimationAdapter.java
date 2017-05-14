@@ -1,6 +1,7 @@
 package com.example.animation.Aaapter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,9 +38,8 @@ public class AnimationAdapter extends RecyclerView.Adapter<AnimationAdapter.MyAn
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 AnimationItem animation = mAnimationItems.get(position);
-                Intent intent = new Intent(parent.getContext(), InternetDisplay.class);
-                intent.putExtra(AnimationFragment.ANIMATION_NAME,animation.getAnimationItem());
-                intent.putExtra(AnimationFragment.ANIMATION_URL,animation.getSeeOnlineUrl());
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(animation.getSeeOnlineUrl()));
                 parent.getContext().startActivity(intent);
             }
         });

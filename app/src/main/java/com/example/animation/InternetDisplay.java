@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.DownloadListener;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -109,7 +110,13 @@ public class InternetDisplay extends AppCompatActivity {
 
         webView.setWebChromeClient(webChromeClient);
         webView.setWebViewClient(webViewClient);
-
+        webView.setDownloadListener(new DownloadListener() {
+            @Override
+            public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+            }
+        });
         webView.loadUrl(animationUrl);
 
         internrtClose.setOnClickListener(new View.OnClickListener() {
