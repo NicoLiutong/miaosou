@@ -120,6 +120,7 @@ public class ComicNumberActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         numberRecyclerView.setLayoutManager(layoutManager);
         numberAdapter = new ComicNumberAdapter(comicNumberLists);
+        numberRecyclerView.setNestedScrollingEnabled(false);
         numberRecyclerView.setAdapter(numberAdapter);
 
     }
