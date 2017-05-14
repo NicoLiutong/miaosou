@@ -171,6 +171,7 @@ public class AnimationFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         //獲取SharePreference
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         /*
@@ -182,11 +183,12 @@ public class AnimationFragment extends Fragment {
         sixRecyclerView.setItemAnimator(new DefaultItemAnimator());
         sevenRecyclerView.setItemAnimator(new DefaultItemAnimator());*/
         //獲取數據進行顯示
+
         handAnimation();
     }
 
-
     /*
+
     如果沒有數據庫，進行查詢更新數據庫並顯示；否則直接從數據庫裏查詢顯示
     */
     public void handAnimation(){

@@ -32,11 +32,11 @@ import com.example.animation.Fragment.ComicFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Random; 
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int ANIMATION = 0;
+    private static final int ANIMATION = 0;  
 
     private static final int COMIC = 1;
 
@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity {
         isInternetOk();  //判斷網絡是否打開
 
         animationPageCardview.setOnClickListener(new View.OnClickListener() {  //點擊animationPageCardview，調用animationPageSet
+
             //1、設置button顏色和title 2、設置顯示的Fragment
+
             @Override
             public void onClick(View v) {
                 animationPageSet(animationFragment);
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         comicPageCardview.setOnClickListener(new View.OnClickListener() {      //點擊animationPageCardview，調用comicPageSet
-            //1、設置button顏色 2、設置顯示的Fragment
+
             @Override
             public void onClick(View v) {
                 comicPageSet(comicFragment);
@@ -105,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {  //下拉刷新，下拉先關掉顯示，判斷是ANIMATION還是COMIC刷新
-            //如果是ANIMATION刷新，則調用animationFragment裏的queryAnimation；否則調用comicFragment的refreshComic
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(false);
@@ -195,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
     3、判斷是否有連接，沒有彈出對話框
     4、對話框的確認button，點擊進入設置頁面
     */
+
     public void isInternetOk(){
         ConnectivityManager manger = (ConnectivityManager)
                 this.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -220,7 +222,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    /*
+
+    /* 
+>>>>>>> 78d69cd103828115de3c40dcfad215950b4eacaa
     添加圖片
     */
     private List<Integer> setImageUrl(){
@@ -271,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
         imageUrls.add(R.drawable.img044);
         return imageUrls;
     }
+
     /*
      設置toolbar顯示的image*/
     private void setToolbarImage(){

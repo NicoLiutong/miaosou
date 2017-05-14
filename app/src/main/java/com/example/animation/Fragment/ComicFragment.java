@@ -29,13 +29,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.jsoup.Connection.Method.HEAD;
+
 /**
  * Created by 刘通 on 2017/3/29.
  */
 
 public class ComicFragment extends Fragment implements View.OnClickListener{
 
-    public static final String COMICURL = "comicurl";
+    public static final String COMICURL = "comicurl";   
 
     public static final String COMICREADURL = "comicreadurl";
 
@@ -131,6 +133,7 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
         horrorTextView.setOnClickListener(this);
         randTextView.setOnClickListener(this);
 
+
         /*初始化
         1、將所有button的顏色初始化
         2、初始化comicurl
@@ -168,6 +171,7 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             updateComic();
         }
     }
+
 
     /*查詢數據
    1、顯示ProgressDialog
