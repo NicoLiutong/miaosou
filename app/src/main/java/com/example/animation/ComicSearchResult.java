@@ -87,7 +87,7 @@ public class ComicSearchResult extends AppCompatActivity {
                         resultList.setComicUrl("https://nyaso.com" + comic.select("a").get(0).attr("href"));
                         resultList.setComicPages(comic.select("i").get(0).text());
                         resultList.setComicName(comic.select("span").get(0).text());
-                        resultList.setComicImageUrl(comic.select("img").get(0).attr("src"));
+                        resultList.setComicImageUrl("https:" + comic.select("img").attr("src"));
                         resultLists.add(resultList);
                     }
 

@@ -269,7 +269,7 @@ public class ComicNumberActivity extends AppCompatActivity {
                     Document document = Jsoup.connect(comicUrl).timeout(3000).post();
 
                     comicName = document.select("h1").get(0).text();
-                    comicImageUrl = document.select("img").get(1).attr("src");
+                    comicImageUrl = "https:" + document.select("img").get(1).attr("src");
                     comicUpdateType = document.select("div").get(4).text().split("：")[1];
                     Element aboutMeaasge = document.select("ul").get(3);
                     Elements message = aboutMeaasge.select("li");
@@ -280,14 +280,14 @@ public class ComicNumberActivity extends AppCompatActivity {
                     comicPesronLove = message.get(4).text();
                     comicIntroduction = "简介：" + document.select("code").get(0).text();
                     //Log.d("intro",comicIntroduction);
-                    Element comic = document.select("div").get(6);
+                    Element comic = document.select("div").get(7);
                     Elements chapters = comic.select("a");
                     for(Element chapter:chapters){
                         ComicNumberList numberList = new ComicNumberList();
                         numberList.setComicUrl(comicUrl);
                         String comicPages = chapter.text().split(" ")[0];
                         numberList.setComicPages(comicPages);
-                        numberList.setComicEpisodes(chapter.select("span").get(0).text());
+                        numberList.setComicEpisodes(chapter.select("span").text());
                         numberList.setComicPagesUrl("https://nyaso.com/comic/" + chapter.attr("href"));
                         if(comicPages.equals(comicMessageItem.getReadNow())){
                             numberList.setComicLastRead(true);

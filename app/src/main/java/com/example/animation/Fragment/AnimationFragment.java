@@ -95,6 +95,7 @@ public class AnimationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.animation_list,container,false);
         linearAnimationList = (LinearLayout) view.findViewById(R.id.linear_animationList);
+        //對所有的recyclerview進行初始化
         oneRecyclerView = (RecyclerView) view.findViewById(R.id.oneAnimation_recycler);
         twoRecyclerView = (RecyclerView) view.findViewById(R.id.twoAnimation_recycler);
         threeRecyclerView = (RecyclerView) view.findViewById(R.id.threeAnimation_recycler);
@@ -148,6 +149,14 @@ public class AnimationFragment extends Fragment {
         sixRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         sevenRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
 
+        oneRecyclerView.setNestedScrollingEnabled(false);
+        twoRecyclerView.setNestedScrollingEnabled(false);
+        threeRecyclerView.setNestedScrollingEnabled(false);
+        fourRecyclerView.setNestedScrollingEnabled(false);
+        fiveRecyclerView.setNestedScrollingEnabled(false);
+        sixRecyclerView.setNestedScrollingEnabled(false);
+        sevenRecyclerView.setNestedScrollingEnabled(false);
+
         oneRecyclerView.setAdapter(oneAnimationAdapter);
         twoRecyclerView.setAdapter(twoAnimationAdapter);
         threeRecyclerView.setAdapter(threeAnimationAdapter);
@@ -162,6 +171,7 @@ public class AnimationFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //獲取SharePreference
         pref = PreferenceManager.getDefaultSharedPreferences(getContext());
         /*
         oneRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -171,23 +181,29 @@ public class AnimationFragment extends Fragment {
         fiveRecyclerView.setItemAnimator(new DefaultItemAnimator());
         sixRecyclerView.setItemAnimator(new DefaultItemAnimator());
         sevenRecyclerView.setItemAnimator(new DefaultItemAnimator());*/
-
-            handAnimation();
+        //獲取數據進行顯示
+        handAnimation();
     }
 
 
-
+    /*
+    如果沒有數據庫，進行查詢更新數據庫並顯示；否則直接從數據庫裏查詢顯示
+    */
     public void handAnimation(){
         if(! DataSupport.isExist(AnimationItem.class)){
             queryAnimation();
         }else {
-          showAnimationList();
-       }
+            showAnimationList();
+        }
     }
-
+    /*
+    1、設置ProgressDialog顯示
+    2、從忘了查詢數據，更新數據庫
+    3、回到主線程，關閉ProgressDialog，並更新顯示
+    */
     public void queryAnimation(){
         linearAnimationList.setVisibility(View.INVISIBLE);
-            showProgressDialog();
+        showProgressDialog();
         new Thread() {
             @Override
             public void run() {
@@ -204,43 +220,43 @@ public class AnimationFragment extends Fragment {
                     //if(dateName.equals(date)){
 
                     //}else {
-                        editor = pref.edit();
-                        editor.putString("datename", date);
-                        editor.apply();
+                    editor = pref.edit();
+                    editor.putString("datename", date);
+                    editor.apply();
 
-                        //Log.d("setoption",pref.getString("datename",""));
+                    //Log.d("setoption",pref.getString("datename",""));
 
-                        Elements animationlists = document.getElementsByTag("tbody");
-                        for (Element animationlist : animationlists) {
-                            String week = "week" + i;
-                            i++;
-                            Elements animations = animationlist.select("tr");
-                            for (Element animation : animations) {
-                                Element name = animation.select("a.name").first();
-                                Element type = animation.select("span").get(1);
-                                Elements downloads = animation.select("a.tag");
-                                AnimationItem animationItem = new AnimationItem();
-                                animationItem.setWeek(week);
-                                //Log.d("week", week);
-                                animationItem.setAnimationItem(name.text());
-                                //Log.d("name", name.text());
-                                animationItem.setAnimationType(type.text());
-                                //Log.d("type", type.text());
-                                for (Element download : downloads) {
-                                    if(download.text().equals("资讯")){
-                                        animationItem.setAnimationInformationUrl("http://ouo.us" + download.attr("href"));
-                                    }
-                                    if (download.text().equals("在线")) {
-                                        animationItem.setSeeOnlineUrl(download.attr("href"));
-                                    }
-                                    if (download.text().equals("下载")) {
-                                        animationItem.setDownloadUrl(download.attr("href"));
-                                        //Log.d("url",String.valueOf(download.attr("href")));
-                                    }
+                    Elements animationlists = document.getElementsByTag("tbody");
+                    for (Element animationlist : animationlists) {
+                        String week = "week" + i;
+                        i++;
+                        Elements animations = animationlist.select("tr");
+                        for (Element animation : animations) {
+                            Element name = animation.select("a.name").first();
+                            Element type = animation.select("span").get(1);
+                            Elements downloads = animation.select("a.tag");
+                            AnimationItem animationItem = new AnimationItem();
+                            animationItem.setWeek(week);
+                            //Log.d("week", week);
+                            animationItem.setAnimationItem(name.text());
+                            //Log.d("name", name.text());
+                            animationItem.setAnimationType(type.text());
+                            //Log.d("type", type.text());
+                            for (Element download : downloads) {
+                                if(download.text().equals("资讯")){
+                                    animationItem.setAnimationInformationUrl("http://ouo.us" + download.attr("href"));
                                 }
-                                animationItem.save();
+                                if (download.text().equals("在线")) {
+                                    animationItem.setSeeOnlineUrl(download.attr("href"));
+                                }
+                                if (download.text().equals("下载")) {
+                                    animationItem.setDownloadUrl(download.attr("href"));
+                                    //Log.d("url",String.valueOf(download.attr("href")));
+                                }
                             }
+                            animationItem.save();
                         }
+                    }
                     //}
                 } catch (IOException e) {
                     e.printStackTrace();
