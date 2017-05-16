@@ -77,7 +77,7 @@ public class InternetDisplay extends AppCompatActivity {
 
 
         WebViewClient webViewClient = new WebViewClient() {
-
+        //開始加載新的一個網頁，先判斷是否是磁力鏈接，如果是調用系統瀏覽器；否則不調用
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 Log.d("url",url);
@@ -88,7 +88,7 @@ public class InternetDisplay extends AppCompatActivity {
                 }
                 super.onPageStarted(view, url, favicon);
             }
-
+           //設置仍使用webview打開新聞網頁
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 /*String uri = request.getUrl().getScheme().trim();*/
@@ -109,7 +109,7 @@ public class InternetDisplay extends AppCompatActivity {
         };
 
         WebChromeClient webChromeClient = new WebChromeClient() {
-
+            //設置滾動條
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 super.onProgressChanged(view, newProgress);
@@ -121,7 +121,7 @@ public class InternetDisplay extends AppCompatActivity {
                     webBar.setVisibility(View.VISIBLE);
                 }
             }
-
+            //設置標題
             @Override
             public void onReceivedTitle(WebView view, String title) {
                 System.out.println("标题在这里");
@@ -132,6 +132,7 @@ public class InternetDisplay extends AppCompatActivity {
 
         webView.setWebChromeClient(webChromeClient);
         webView.setWebViewClient(webViewClient);
+        //設置下載
         webView.setDownloadListener(new DownloadListener() {
             @Override
             public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimetype, long contentLength) {
@@ -139,14 +140,16 @@ public class InternetDisplay extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //加載網頁
         webView.loadUrl(animationUrl);
-
+        //設置關閉按鍵的處理
         internrtClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
+        //設置使用系統瀏覽器按鍵的處理
         internetGotoInternet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,8 +161,8 @@ public class InternetDisplay extends AppCompatActivity {
         });
 
         }
-
-
+    
+    //當按下返回鍵，並且webview可以goback，則設置返回為webview的goback
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
@@ -169,7 +172,7 @@ public class InternetDisplay extends AppCompatActivity {
 
         return super.onKeyDown(keyCode, event);
     }
-
+    //處理activity的銷毀
     @Override
     protected void onDestroy() {
         if (webView != null) {
