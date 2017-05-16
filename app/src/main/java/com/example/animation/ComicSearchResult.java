@@ -51,11 +51,11 @@ public class ComicSearchResult extends AppCompatActivity {
 
         //Log.d("comicurl",comicSearchUrl);
 
-        comicNameView = (TextView) findViewById(R.id.comic_searchName);
-        comicBackButton = (Button) findViewById(R.id.comic_searchBack);
-        comicSearchNoElementView = (TextView) findViewById(R.id.comic_searchFali);
-        comicSearchRecyclerview = (RecyclerView) findViewById(R.id.comic_searchRecyclerview);
-
+        comicNameView = (TextView) findViewById(R.id.comic_searchName);         //搜索的標題
+        comicBackButton = (Button) findViewById(R.id.comic_searchBack);         //返回按鍵
+        comicSearchNoElementView = (TextView) findViewById(R.id.comic_searchFali);      //搜索失敗顯示的介面
+        comicSearchRecyclerview = (RecyclerView) findViewById(R.id.comic_searchRecyclerview);       //recyclerview
+        //初始化recyclerview
         GridLayoutManager layoutManager = new GridLayoutManager(ComicSearchResult.this,2);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         comicSearchRecyclerview.setLayoutManager(layoutManager);
@@ -71,7 +71,7 @@ public class ComicSearchResult extends AppCompatActivity {
         });
         queryComicResult();
     }
-
+        //查詢搜索結果，並顯示
     private void queryComicResult(){
             resultLists.clear();
         new Thread(){
