@@ -69,30 +69,30 @@ public class SearchActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search);
         searchBackButton = (Button) findViewById(R.id.search_back);
-        searchEditText = (EditText) findViewById(R.id.et_search);
-        searchListView = (ListView) findViewById(R.id.search_list);
-        searchClear = (TextView) findViewById(R.id.tv_clear);
-        searchSpinner = (Spinner) findViewById(R.id.search_spinner);
-
+        searchEditText = (EditText) findViewById(R.id.et_search);           //搜素輸入框
+        searchListView = (ListView) findViewById(R.id.search_list);         //歷史搜索記錄
+        searchClear = (TextView) findViewById(R.id.tv_clear);       //清除歷史搜索記錄
+        searchSpinner = (Spinner) findViewById(R.id.search_spinner);        //Spinner彈框，用於選擇搜索的類型
+        //spinner添加“漫畫”和“動漫”
         spinnerList.add("动漫");
         spinnerList.add("漫画");
-
+        //設置spinner的adapter
         spinnerAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,spinnerList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchSpinner.setAdapter(spinnerAdapter);
-
+        //設置歷史搜索的adapter
         adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,historySearchList);
         searchListView.setAdapter(adapter);
-
+        //初始化搜索類型，搜索url，spinner的顯示，輸入框的提示
         searchUrl = animationUrl;
         type = ANIMATION;
         SpannableString hint = new SpannableString("请输入动漫名称");
         searchEditText.setHint(hint);
 
         SQLiteDatabase db = Connector.getDatabase();
-
+        //更新曆史搜索記錄顯示
         upDateList();
-
+        //設置spinner的每個item的操作
         searchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
         @Override
          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -132,7 +132,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-
+        //搜索框的keylistener，判斷是否是回車功能，是則隱藏鍵盤，搜索動漫或漫畫，並進入相對應的的介面
         searchEditText.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
@@ -173,7 +173,7 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
 
-
+        //處理歷史搜索的每個item的點擊，先判斷搜索的類型，然後傳入相對應的url，進入搜索介面
         searchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
