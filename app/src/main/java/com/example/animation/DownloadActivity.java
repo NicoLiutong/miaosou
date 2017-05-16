@@ -69,8 +69,9 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         page = 1;
         maxPage = 0;
         Intent intent = getIntent();
-        animationName = intent.getStringExtra(AnimationFragment.ANIMATION_NAME);
-        animationUrl = intent.getStringExtra(AnimationFragment.ANIMATION_URL);
+        animationName = intent.getStringExtra(AnimationFragment.ANIMATION_NAME);        //獲取傳入的動漫名字
+        animationUrl = intent.getStringExtra(AnimationFragment.ANIMATION_URL);      //獲取傳入的動漫url
+        //初始化downloadRecyclerview
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         downloadRecyclerView = (RecyclerView) findViewById(R.id.download_list);
@@ -78,13 +79,13 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         downloadAdapter = new DownloadAdapter(downloadItemList);
         downloadRecyclerView.addItemDecoration(new DividerItemDecoration(this));
         downloadRecyclerView.setAdapter(downloadAdapter);
-
-        animationTitle = (TextView) findViewById(R.id.download_title);
-        backButton = (Button) findViewById(R.id.downliad_back);
-        linearLayout = (LinearLayout) findViewById(R.id.button_layout);
-        returnPageButton = (Button) findViewById(R.id.return_page);
-        nextPageButton = (Button) findViewById(R.id.next_page);
-        pageText = (TextView) findViewById(R.id.pages);
+        
+        animationTitle = (TextView) findViewById(R.id.download_title);      //動漫title
+        backButton = (Button) findViewById(R.id.downliad_back);     //返回鍵
+        linearLayout = (LinearLayout) findViewById(R.id.button_layout);     
+        returnPageButton = (Button) findViewById(R.id.return_page);     //返回上一頁
+        nextPageButton = (Button) findViewById(R.id.next_page);     //下一頁
+        pageText = (TextView) findViewById(R.id.pages);     //頁碼顯示
         pageText.setText(String.valueOf(page));
         animationTitle.setText(animationName);
         backButton.setOnClickListener(this);
@@ -92,10 +93,10 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         nextPageButton.setOnClickListener(this);
         DataSupport.deleteAll(DownloadItem.class);
         //Log.d("url",animationUrl);
-        queryDownload(animationUrl);
+        queryDownload(animationUrl);        //查詢動漫列表
     }
 
-
+    //查詢數據，更新數據庫
     private void queryDownload(final String pageUrl){
         showProgressDialog();
         new Thread() {
@@ -129,7 +130,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                                 downloadItem.save();
                             }
                         }
-
+                //判斷是否到達最後一頁：如果是則將maxpage設置為這頁，isnextpages設置為false
                     Elements pages = document.select("a.button-primary");
                     for(Element pagess:pages){
                         String attr = pagess.attr("href");
@@ -184,6 +185,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         switch (buttonId){
             case R.id.downliad_back: finish();
                 break;
+            //上一頁按鍵，先判斷是否為第一頁；是，則顯示彈窗；否，則將page減1，isnextpages設置為true，pagetext更新，從數據庫中查詢數據，更新顯示
             case R.id.return_page:
                 if(page == 1){
                     Toast.makeText(this,"已经是第一页啦",Toast.LENGTH_SHORT).show();
@@ -196,6 +198,8 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                     updateData(charLists);
                 }
                 break;
+                //下一頁按鍵，先判斷isnextpages；如果為false，彈出最後一頁通知；否則將page加1，然後與最大頁數比較，相等則把isnextpages設置為false；然後
+                //更新顯示，先在數據庫中查詢，如果有則直接更新；沒有則從網絡查詢並更新
             case R.id.next_page:
                if(! isNextPages){
                    Toast.makeText(this,"已经是最后一页啦",Toast.LENGTH_SHORT).show();
@@ -217,7 +221,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         }
 
     }
-
+    //更新顯示
     public void updateData(List<DownloadItem> charLists){
         downloadItemList.clear();
         for(DownloadItem charList:charLists){
