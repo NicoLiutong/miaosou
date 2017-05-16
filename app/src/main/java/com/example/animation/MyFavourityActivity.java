@@ -42,13 +42,13 @@ public class MyFavourityActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+        //設置recyclerview的屬性
         GridLayoutManager layoutManager = new GridLayoutManager(MyFavourityActivity.this,2);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         myFavourityRecyclerview.setLayoutManager(layoutManager);
         myFavourityAdapter = new ComicSearchResultAdapter(comicSearchResults);
         myFavourityRecyclerview.setAdapter(myFavourityAdapter);
-
+        //查詢並顯示favourity的數據
         comicSearchResults.clear();
         comicMessageItems = DataSupport.findAll(ComicMessageItem.class);
         for(ComicMessageItem comicMessageItem:comicMessageItems){
