@@ -271,7 +271,7 @@ public class ComicNumberActivity extends AppCompatActivity {
 
                     comicName = document.select("h1").get(0).text();
                     comicImageUrl = "https:" + document.select("img").get(1).attr("src");
-                    comicUpdateType = document.select("div").get(4).text().split("：")[1];
+                    comicUpdateType = document.select("div").get(4).text().split("：")[1].split(" ")[0];
                     Element aboutMeaasge = document.select("ul").get(3);
                     Elements message = aboutMeaasge.select("li");
                     lastUpdateTime = message.get(0).text();

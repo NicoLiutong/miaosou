@@ -13,8 +13,8 @@
         >
         <Button
             android:id="@+id/comic_readBack"
-            android:layout_width="50dp"
-            android:layout_height="35dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="25dp"
