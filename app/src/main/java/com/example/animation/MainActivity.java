@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 swipeRefreshLayout.setRefreshing(false);
                 if(pagesName == ANIMATION){
                     animationFragment.queryAnimation();
+                    setAnimationTitle();
+
                 }else {
                     comicFragment.refreshComic();
                 }

@@ -26,8 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".InternetDisplay">
-        </activity>
         <activity android:name=".DownloadActivity">
         </activity>
         <activity android:name=".SearchActivity">
@@ -39,6 +37,12 @@
         <activity android:name=".ComicReadActivity">
         </activity>
         <activity android:name=".MyFavourityActivity">
+        </activity>
+        <activity android:name=".BasicWebActivity"
+                  android:hardwareAccelerated="true"
+                  android:configChanges="orientation|screenSize"
+            >
+
         </activity>
     </application>
 

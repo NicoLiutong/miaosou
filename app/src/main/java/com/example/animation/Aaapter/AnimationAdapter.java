@@ -1,7 +1,6 @@
 package com.example.animation.Aaapter;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.animation.BasicWebActivity;
 import com.example.animation.Class.AnimationItem;
 import com.example.animation.DownloadActivity;
 import com.example.animation.Fragment.AnimationFragment;
-import com.example.animation.InternetDisplay;
 import com.example.animation.R;
 
 import java.util.List;
@@ -38,8 +37,10 @@ public class AnimationAdapter extends RecyclerView.Adapter<AnimationAdapter.MyAn
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 AnimationItem animation = mAnimationItems.get(position);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(animation.getSeeOnlineUrl()));
+                /*Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(animation.getSeeOnlineUrl()));*/
+                Intent intent = new Intent(parent.getContext(), BasicWebActivity.class);
+                intent.putExtra(AnimationFragment.ANIMATION_URL,animation.getSeeOnlineUrl());
                 parent.getContext().startActivity(intent);
             }
         });
@@ -61,8 +62,7 @@ public class AnimationAdapter extends RecyclerView.Adapter<AnimationAdapter.MyAn
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 AnimationItem animation = mAnimationItems.get(position);
-                Intent intent = new Intent(parent.getContext(), InternetDisplay.class);
-                intent.putExtra(AnimationFragment.ANIMATION_NAME,animation.getAnimationItem());
+                Intent intent = new Intent(parent.getContext(), BasicWebActivity.class);
                 intent.putExtra(AnimationFragment.ANIMATION_URL,animation.getAnimationInformationUrl());
                 parent.getContext().startActivity(intent);
             }

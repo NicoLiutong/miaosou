@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.animation.Fragment.AnimationFragment;
+import com.example.animation.BasicWebActivity;
 import com.example.animation.Class.DownloadItem;
-import com.example.animation.InternetDisplay;
+import com.example.animation.Fragment.AnimationFragment;
 import com.example.animation.R;
 
 import java.util.List;
@@ -34,8 +34,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.MyDown
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
                 DownloadItem download = mDownloadItem.get(position);
-                Intent intent = new Intent(parent.getContext(), InternetDisplay.class);
-                intent.putExtra(AnimationFragment.ANIMATION_NAME,"下载");
+                Intent intent = new Intent(parent.getContext(), BasicWebActivity.class);
                 intent.putExtra(AnimationFragment.ANIMATION_URL,download.getDownloadUrl());
                 parent.getContext().startActivity(intent);
             }
