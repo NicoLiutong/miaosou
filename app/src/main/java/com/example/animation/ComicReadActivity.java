@@ -2,14 +2,16 @@ package com.example.animation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.animation.Aaapter.ComicReadAdapter;
+import com.bumptech.glide.Glide;
+import com.example.animation.Aaapter.DepthPageTransformer;
+import com.example.animation.Aaapter.MyPageAdapter;
 import com.example.animation.Fragment.ComicFragment;
 
 import java.util.ArrayList;
@@ -27,9 +29,13 @@ public class ComicReadActivity extends AppCompatActivity {
 
     private TextView comicReadPage;
 
-    private RecyclerView comicReadRecyclerview;
-
     private List<String> comicImageUrl = new ArrayList<>();
+
+    private List<ImageView> imageViews = new ArrayList<>();
+
+    private ViewPager viewPager;
+
+    private MyPageAdapter pageAdapter;
 
     private String comicReadFirst;
 
@@ -39,9 +45,7 @@ public class ComicReadActivity extends AppCompatActivity {
 
     private int comicReadThird = 1;
 
-    private ComicReadAdapter comicReadAdapter;
-
-    private static String frontUrl = "http://tt.fuli.in/c86eo736r62";
+    private static String frontUrl = "http://tt.fuli.in/c86ns736r62";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +57,8 @@ public class ComicReadActivity extends AppCompatActivity {
         comicAllPages = intent.getStringExtra(ComicFragment.COMICREADEPISODES);
         comicReadBack = (Button) findViewById(R.id.comic_readBack);
         comicReadPage = (TextView) findViewById(R.id.comic_readPage);
-        comicReadRecyclerview = (RecyclerView) findViewById(R.id.comic_readRecyclerview);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ComicReadActivity.this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        comicReadRecyclerview.setLayoutManager(layoutManager);
-        comicReadAdapter = new ComicReadAdapter(comicImageUrl);
-        comicReadRecyclerview.setAdapter(comicReadAdapter);
+        comicReadPage.setText("第" + comicPage);
+        viewPager = (ViewPager) findViewById(R.id.comic_read_pager);
 
         comicReadBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,8 +66,14 @@ public class ComicReadActivity extends AppCompatActivity {
                 finish();
             }
         });
+        initData();
+        pageAdapter = new MyPageAdapter(imageViews);
+        viewPager.setAdapter(pageAdapter);
+        viewPager.setPageTransformer(true,new DepthPageTransformer());
+    }
+
+    private void initData(){
         comicImageUrl.clear();
-        comicReadPage.setText("第" + comicPage);
         comicReadFirst = comicUrl.split("/")[4].split("\\.")[0];
         comicReadSecond = comicPage.split("卷")[0].split("话")[0];
         comicReadPages = comicAllPages.split("P")[0];//.split("\\ ")[1];
@@ -103,9 +109,17 @@ public class ComicReadActivity extends AppCompatActivity {
                 comicReadThird ++;
             }
         }
-        comicReadAdapter.notifyDataSetChanged();
-        //for (String a:comicImageUrl) {
-          //  Log.d("a",a);
-       //}
+
+        /*for (int i = 0; i < comicImageUrl.size(); i ++){
+            Log.d("pagesurl",comicImageUrl.get(i));
+        }*/
+
+        for (int i = 0; i < comicImageUrl.size(); i ++){
+            ImageView imageView = new ImageView(getApplicationContext());
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(i)).into(imageView);
+            imageViews.add(imageView);
+        }
+
     }
 }
