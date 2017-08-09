@@ -35,6 +35,8 @@ public class ComicReadActivity extends AppCompatActivity {
 
     private ViewPager viewPager;
 
+    private TextView comicPagesText;
+
     private MyPageAdapter pageAdapter;
 
     private String comicReadFirst;
@@ -42,6 +44,8 @@ public class ComicReadActivity extends AppCompatActivity {
     private String comicReadSecond;
 
     private String comicReadPages;
+
+    private int currentMaxPagePosition = 0;
 
     private int comicReadThird = 1;
 
@@ -59,6 +63,7 @@ public class ComicReadActivity extends AppCompatActivity {
         comicReadPage = (TextView) findViewById(R.id.comic_readPage);
         comicReadPage.setText("第" + comicPage);
         viewPager = (ViewPager) findViewById(R.id.comic_read_pager);
+        comicPagesText = (TextView) findViewById(R.id.read_comic_pages);
 
         comicReadBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +75,35 @@ public class ComicReadActivity extends AppCompatActivity {
         pageAdapter = new MyPageAdapter(imageViews);
         viewPager.setAdapter(pageAdapter);
         viewPager.setPageTransformer(true,new DepthPageTransformer());
+        comicPagesText.setText((viewPager.getCurrentItem() + 1) + "/" + comicImageUrl.size());
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                comicPagesText.setText((position + 1) + "/" + comicImageUrl.size());
+
+                if(currentMaxPagePosition + 1 == comicImageUrl.size()){
+                    currentMaxPagePosition = comicImageUrl.size() - 1;
+                }else if(position == currentMaxPagePosition){
+                    currentMaxPagePosition = currentMaxPagePosition + 1;
+                    ImageView imageView = new ImageView(getApplicationContext());
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).into(imageView);
+                    imageViews.add(imageView);
+                    pageAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void initData(){
@@ -114,12 +148,28 @@ public class ComicReadActivity extends AppCompatActivity {
             Log.d("pagesurl",comicImageUrl.get(i));
         }*/
 
-        for (int i = 0; i < comicImageUrl.size(); i ++){
+        /*for (int i = 0; i < comicImageUrl.size(); i ++){
             ImageView imageView = new ImageView(getApplicationContext());
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Glide.with(getApplicationContext()).load(comicImageUrl.get(i)).into(imageView);
             imageViews.add(imageView);
+        }*/
+        if(comicImageUrl.size() >= 2){
+            currentMaxPagePosition = 1;
+            ImageView imageView1 = new ImageView(getApplicationContext());
+            imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).into(imageView1);
+            imageViews.add(imageView1);
+            ImageView imageView2 = new ImageView(getApplicationContext());
+            imageView2.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).into(imageView2);
+            imageViews.add(imageView2);
+        }else if(comicImageUrl.size() == 1){
+            currentMaxPagePosition = 0;
+            ImageView imageView1 = new ImageView(getApplicationContext());
+            imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).into(imageView1);
+            imageViews.add(imageView1);
         }
-
     }
 }
