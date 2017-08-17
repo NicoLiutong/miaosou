@@ -211,52 +211,55 @@ public class AnimationFragment extends Fragment {
             public void run() {
                 super.run();
                 try {
-                    DataSupport.deleteAll(AnimationItem.class);
                     int i = 1;
                     Document document = Jsoup.connect("http://ouo.us/anime.html").timeout(3000).post();
                     //String dateName = pref.getString("datename","");
-                    String date = document.select("option").get(0).text();
+                    if(document != null){
+                        DataSupport.deleteAll(AnimationItem.class);
+                        String date = document.select("option").get(0).text();
 
-                    //Log.d("option",date);
+                        //Log.d("option",date);
 
-                    //if(dateName.equals(date)){
+                        //if(dateName.equals(date)){
 
-                    //}else {
-                    editor = pref.edit();
-                    editor.putString("datename", date);
-                    editor.apply();
+                        //}else {
+                        editor = pref.edit();
+                        editor.putString("datename", date);
+                        editor.apply();
 
-                    //Log.d("setoption",pref.getString("datename",""));
+                        //Log.d("setoption",pref.getString("datename",""));
 
-                    Elements animationlists = document.getElementsByTag("tbody");
-                    for (Element animationlist : animationlists) {
-                        String week = "week" + i;
-                        i++;
-                        Elements animations = animationlist.select("tr");
-                        for (Element animation : animations) {
-                            Element name = animation.select("a.name").first();
-                            Element type = animation.select("span").get(1);
-                            Elements downloads = animation.select("a.tag");
-                            AnimationItem animationItem = new AnimationItem();
-                            animationItem.setWeek(week);
-                            //Log.d("week", week);
-                            animationItem.setAnimationItem(name.text());
-                            //Log.d("name", name.text());
-                            animationItem.setAnimationType(type.text());
-                            //Log.d("type", type.text());
-                            for (Element download : downloads) {
-                                if(download.text().equals("资讯")){
-                                    animationItem.setAnimationInformationUrl("http://ouo.us" + download.attr("href"));
+                        Elements animationlists = document.getElementsByTag("tbody");
+                        for (Element animationlist : animationlists) {
+                            String week = "week" + i;
+                            i++;
+                            Elements animations = animationlist.select("tr");
+                            for (Element animation : animations) {
+                                Element name = animation.select("a.name").first();
+                                Element type = animation.select("span").get(1);
+                                Elements downloads = animation.select("a.tag");
+                                AnimationItem animationItem = new AnimationItem();
+                                animationItem.setWeek(week);
+                                //Log.d("week", week);
+                                animationItem.setAnimationItem(name.text());
+                                //Log.d("name", name.text());
+                                animationItem.setAnimationType(type.text());
+                                //Log.d("type", type.text());
+                                for (Element download : downloads) {
+                                    if(download.text().equals("资讯")){
+                                        animationItem.setAnimationInformationUrl("http://ouo.us" + download.attr("href"));
+                                    }
+                                    if (download.text().equals("在线")) {
+                                        animationItem.setSeeOnlineUrl(download.attr("href"));
+                                    }
+                                    if (download.text().equals("下载")) {
+                                        animationItem.setDownloadUrl(download.attr("href"));
+                                        //Log.d("url",String.valueOf(download.attr("href")));
+                                    }
                                 }
-                                if (download.text().equals("在线")) {
-                                    animationItem.setSeeOnlineUrl(download.attr("href"));
-                                }
-                                if (download.text().equals("下载")) {
-                                    animationItem.setDownloadUrl(download.attr("href"));
-                                    //Log.d("url",String.valueOf(download.attr("href")));
-                                }
-                            }
-                            animationItem.save();
+                                animationItem.save();
+                    }
+
                         }
                     }
                     //}

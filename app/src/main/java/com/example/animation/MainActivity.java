@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.animation.Fragment.AnimationFragment;
 import com.example.animation.Fragment.ComicFragment;
+import com.example.animation.PushSever.DemoApplication;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        DemoApplication.setMainActivity(this);
         imageUrl = setImageUrl();  //獲取圖片url
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.main_collapsingToolbar);
