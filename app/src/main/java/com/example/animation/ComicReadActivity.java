@@ -87,8 +87,8 @@ public class ComicReadActivity extends AppCompatActivity {
                 }else if(position == currentMaxPagePosition){
                     currentMaxPagePosition = currentMaxPagePosition + 1;
                     ImageView imageView = new ImageView(getApplicationContext());
-                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).into(imageView);
+                    //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).placeholder(R.drawable.loading).into(imageView);
                     imageViews.add(imageView);
                     pageAdapter.notifyDataSetChanged();
                 }
@@ -157,18 +157,18 @@ public class ComicReadActivity extends AppCompatActivity {
         if(comicImageUrl.size() >= 2){
             currentMaxPagePosition = 1;
             ImageView imageView1 = new ImageView(getApplicationContext());
-            imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).into(imageView1);
+            //imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).into(imageView1);
             imageViews.add(imageView1);
             ImageView imageView2 = new ImageView(getApplicationContext());
-            imageView2.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).into(imageView2);
+            //imageView2.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).placeholder(R.drawable.loading).into(imageView2);
             imageViews.add(imageView2);
         }else if(comicImageUrl.size() == 1){
             currentMaxPagePosition = 0;
             ImageView imageView1 = new ImageView(getApplicationContext());
-            imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).into(imageView1);
+            //imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).into(imageView1);
             imageViews.add(imageView1);
         }
     }

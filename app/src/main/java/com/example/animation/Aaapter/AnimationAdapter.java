@@ -83,7 +83,7 @@ public class AnimationAdapter extends RecyclerView.Adapter<AnimationAdapter.MyAn
        //}
         holder.animationTypeText.setText(animationItem.getAnimationType());
         if(animationItem.getSeeOnlineUrl() != null){
-            holder.seeOnlineCardview.setVisibility(View.VISIBLE);
+            holder.seeOnlineCardview.setVisibility(View.GONE);
         }else {
             holder.seeOnlineCardview.setVisibility(View.GONE);
         }

@@ -76,6 +76,7 @@
 
     <android.support.v7.widget.CardView
         android:id="@+id/onlineSee_animationCardview"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
