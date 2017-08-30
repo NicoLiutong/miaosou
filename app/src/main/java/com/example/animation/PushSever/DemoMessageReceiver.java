@@ -1,9 +1,16 @@
 package com.example.animation.PushSever;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.animation.BasicWebActivity;
+import com.example.animation.ComicNumberActivity;
+import com.example.animation.DownloadActivity;
+import com.example.animation.Fragment.AnimationFragment;
+import com.example.animation.Fragment.ComicFragment;
+import com.example.animation.MainActivity;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;
@@ -78,6 +85,29 @@ public class DemoMessageReceiver extends PushMessageReceiver {
             mAlias = miPushMessage.getAlias();
         }
 
+        String s = miPushMessage.getContent();
+        switch (s.split("--")[0]){
+            case "DownloadActivity" :
+                Intent intent1 = new Intent(context, DownloadActivity.class);
+                intent1.putExtra(AnimationFragment.ANIMATION_NAME,s.split("--")[1]);
+                intent1.putExtra(AnimationFragment.ANIMATION_URL,s.split("--")[2]);
+                context.startActivity(intent1);
+                break;
+            case "WebActivity" :
+                Intent intent2 = new Intent(context, BasicWebActivity.class);
+                intent2.putExtra(AnimationFragment.ANIMATION_URL,s.split("--")[1]);
+                context.startActivity(intent2);
+                break;
+            case "ComicActivity" :
+                Intent intent3 = new Intent(context,ComicNumberActivity.class);
+                intent3.putExtra(ComicFragment.COMICURL,s.split("--")[1]);
+                context.startActivity(intent3);
+                break;
+            default:
+                Intent intent4 = new Intent(context,MainActivity.class);
+                context.startActivity(intent4);
+                break;
+        }
         /*Intent intent = new Intent(context,Second.class);
         intent.putExtra("11",miPushMessage.getContent());
         context.startActivity(intent);*/
@@ -190,6 +220,7 @@ public class DemoMessageReceiver extends PushMessageReceiver {
         if (MiPushClient.COMMAND_REGISTER.equals(command)) {
             if (message.getResultCode() == ErrorCode.SUCCESS) {
                 mRegId = cmdArg1;
+                //Log.d("register","success");
                 //log = context.getString(R.string.register_success);
             } else {
                 //log = context.getString(R.string.register_fail);

@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,8 +80,8 @@ public class BasicWebActivity extends AppCompatActivity {
 
         //mAgentWeb.getLoader().loadUrl(getUrl());
 
-        long n = System.currentTimeMillis();
-        Log.i("Info", "init used time:" + (n - p));
+        //long n = System.currentTimeMillis();
+        //Log.i("Info", "init used time:" + (n - p));
 
 
 
@@ -125,7 +124,7 @@ public class BasicWebActivity extends AppCompatActivity {
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             //do you  work
-            Log.i("Info","BaseWebActivity onPageStarted");
+            //Log.i("Info","BaseWebActivity onPageStarted");
         }
     };
     private WebChromeClient mWebChromeClient=new WebChromeClient(){

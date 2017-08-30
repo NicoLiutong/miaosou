@@ -4,7 +4,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Process;
 
-import com.example.animation.MainActivity;
 import com.xiaomi.mipush.sdk.MiPushClient;
 
 import org.litepal.LitePalApplication;
@@ -30,7 +29,7 @@ public class DemoApplication extends LitePalApplication {
     public static final String TAG = "com.example.animation";
 
     //private static DemoHandler sHandler = null;
-    private static MainActivity sMainActivity = null;
+    //private static MainActivity sMainActivity = null;
 
     @Override
     public void onCreate() {
@@ -63,9 +62,9 @@ public class DemoApplication extends LitePalApplication {
         return sHandler;
     }*/
 
-    public static void setMainActivity(MainActivity activity) {
+    /*public static void setMainActivity(MainActivity activity) {
         sMainActivity = activity;
-    }
+    }*/
 
     /*public static class DemoHandler extends Handler {
 

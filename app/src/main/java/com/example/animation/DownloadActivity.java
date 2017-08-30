@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -115,11 +114,11 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                                 Element downloadMessage = download.select("td").get(1).select("p").get(0);
 
 
-                                Log.d("number",downloadNumber.text());
+                                /*Log.d("number",downloadNumber.text());
                                 Log.d("name",downloadName.text());
                                 Log.d("url","https://nyaso.com" + downloadName.attr("href"));
                                 Log.d("message",downloadMessage.text());
-                                Log.d("page",page + "");
+                                Log.d("page",page + "");*/
 
                                 DownloadItem downloadItem = new DownloadItem();
                                 downloadItem.setDownloadPage(page);
