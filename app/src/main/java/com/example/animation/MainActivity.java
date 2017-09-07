@@ -29,7 +29,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.animation.Fragment.AnimationFragment;
 import com.example.animation.Fragment.ComicFragment;
-import com.xiaomi.market.sdk.XiaomiUpdateAgent;
+import com.othershe.nicedialog.NiceDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //DemoApplication.setMainActivity(this);
-        XiaomiUpdateAgent.update(this);
+        //XiaomiUpdateAgent.update(this);
         imageUrl = setImageUrl();  //獲取圖片url
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.main_collapsingToolbar);
@@ -155,7 +155,15 @@ public class MainActivity extends AppCompatActivity {
             case R.id.my_favourity:
                 Intent intent = new Intent(MainActivity.this,MyFavourityActivity.class);
                 MainActivity.this.startActivity(intent);
-
+            case R.id.my_coin:
+                NiceDialog.init()
+                        .setLayoutId(R.layout.pay_author)
+                        .setDimAmount(0.7f)
+                        .setOutCancel(true)
+                        .setMargin(40)
+                        .setShowBottom(false)
+                        .show(getSupportFragmentManager());
+                break;
         }
         return true;
     }
