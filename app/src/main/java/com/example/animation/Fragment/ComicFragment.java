@@ -1,11 +1,11 @@
 package com.example.animation.Fragment;
 
-import android.app.ProgressDialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.example.animation.Aaapter.ComicAdapter;
 import com.example.animation.Class.ComicItem;
 import com.example.animation.R;
+import com.example.animation.view.BounceBallView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -28,8 +29,6 @@ import org.litepal.tablemanager.Connector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.jsoup.Connection.Method.HEAD;
 
 /**
  * Created by 刘通 on 2017/3/29.
@@ -89,7 +88,9 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
 
     private TextView randTextView;
 
-    private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialogBuilder;
+
+    private AlertDialog alertDialog;
 
     private RecyclerView comicRecyclerView;
 
@@ -371,17 +372,21 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
     }
 
     private void showProgressDialog(){
-        if(progressDialog == null){
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("正在加载...");
-            progressDialog.setCanceledOnTouchOutside(false);
+        if(alertDialogBuilder == null){
+            alertDialogBuilder = new AlertDialog.Builder(getContext());
+            View v = View.inflate(getContext(),R.layout.bounce_ball_view,null);
+            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
+            ballView.start();
+            alertDialogBuilder.setView(v);
+            //progressDialog.setMessage("正在加载...");
+            alertDialogBuilder.setCancelable(false);
         }
-        progressDialog.show();
+        alertDialog = alertDialogBuilder.show();
     }
 
     private void closeProgressDialog(){
-        if(progressDialog != null){
-            progressDialog.dismiss();
+        if(alertDialog != null){
+            alertDialog.dismiss();
         }
     }
 }

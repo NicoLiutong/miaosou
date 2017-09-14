@@ -1,11 +1,11 @@
 package com.example.animation.Fragment;
 
-import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,6 +17,7 @@ import com.example.animation.Aaapter.AnimationAdapter;
 import com.example.animation.Aaapter.DividerItemDecoration;
 import com.example.animation.Class.AnimationItem;
 import com.example.animation.R;
+import com.example.animation.view.BounceBallView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -38,7 +39,9 @@ public class AnimationFragment extends Fragment {
 
     public static final String ANIMATION_URL = "animation_url";
 
-    private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialogBuilder;
+
+    private AlertDialog alertDialog;
 
     private RecyclerView oneRecyclerView;
 
@@ -214,7 +217,7 @@ public class AnimationFragment extends Fragment {
                     int i = 1;
                     Document document = Jsoup.connect("http://ouo.us/anime.html").timeout(3000).post();
                     //String dateName = pref.getString("datename","");
-                    if(document != null){
+                    if(document != null && document.toString().length() != 0){
                         DataSupport.deleteAll(AnimationItem.class);
                         String date = document.select("option").get(0).text();
 
@@ -339,17 +342,21 @@ public class AnimationFragment extends Fragment {
     }
 
     private void showProgressDialog(){
-        if(progressDialog == null){
-            progressDialog = new ProgressDialog(getActivity());
-            progressDialog.setMessage("正在加载...");
-            progressDialog.setCanceledOnTouchOutside(false);
+        if(alertDialogBuilder== null){
+            alertDialogBuilder = new AlertDialog.Builder(getContext());
+            View v = View.inflate(getContext(),R.layout.bounce_ball_view,null);
+            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
+            ballView.start();
+            alertDialogBuilder.setView(v);
+            //progressDialog.setMessage("正在加载...");
+            alertDialogBuilder.setCancelable(false);
         }
-        progressDialog.show();
+        alertDialog = alertDialogBuilder.show();
     }
 
     private void closeProgressDialog(){
-        if(progressDialog != null){
-            progressDialog.dismiss();
+        if(alertDialog != null){
+            alertDialog.dismiss();
         }
     }
 }

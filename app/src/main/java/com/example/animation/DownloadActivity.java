@@ -1,8 +1,8 @@
 package com.example.animation;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +16,7 @@ import com.example.animation.Aaapter.DividerItemDecoration;
 import com.example.animation.Aaapter.DownloadAdapter;
 import com.example.animation.Class.DownloadItem;
 import com.example.animation.Fragment.AnimationFragment;
+import com.example.animation.view.BounceBallView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -43,7 +44,9 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     private TextView pageText;
 
-    private ProgressDialog progressDialog;
+    private AlertDialog.Builder alertDialogBuilder;
+
+    private AlertDialog alertDialog;
 
     private LinearLayout linearLayout;
 
@@ -105,6 +108,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                 try {
                     isNextPages = false;
                     Document document = Jsoup.connect(pageUrl).timeout(5000).post();
+                        if(document != null && document.toString().length() != 0){
                         Elements allDownloads = document.getElementsByTag("tbody");
                         for (Element downloadlist : allDownloads) {
                             Elements downloads = downloadlist.select("tr");
@@ -129,19 +133,27 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                                 downloadItem.save();
                             }
                         }
-                //判斷是否到達最後一頁：如果是則將maxpage設置為這頁，isnextpages設置為false
-                    Elements pages = document.select("a.button-primary");
-                    for(Element pagess:pages){
-                        String attr = pagess.attr("href");
-                        if(attr.equals("javascript:alert('已经是最后一页啦！')")){
-                            isNextPages = false;
-                            maxPage = page;
-                        }else {
+                        //判斷是否到達最後一頁：如果是則將maxpage設置為這頁，isnextpages設置為false
+                        Elements pages = document.select("a.button-primary");
+                        for (Element pagess : pages) {
+                            String attr = pagess.attr("href");
+                            if (attr.equals("javascript:alert('已经是最后一页啦！')")) {
+                                isNextPages = false;
+                                maxPage = page;
+                            } else {
 
-                            isNextPages = true;
+                                isNextPages = true;
+                            }
                         }
-                    }
-
+                    }else {
+                            DownloadItem downloadItem = new DownloadItem();
+                            downloadItem.setDownloadPage(1);
+                            downloadItem.setDownloadNumber("");
+                            downloadItem.setDownloadItem("搜索不到资源");
+                            downloadItem.setDownloadMessage("");
+                            downloadItem.setDownloadUrl("");
+                            downloadItem.save();
+                        }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -158,24 +170,6 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
         }.start();
 
-    }
-
-
-    private void showProgressDialog(){
-        linearLayout.setVisibility(View.INVISIBLE);
-        if(progressDialog == null){
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("正在加载...");
-            progressDialog.setCanceledOnTouchOutside(false);
-        }
-        progressDialog.show();
-    }
-
-    private void closeProgressDialog(){
-        linearLayout.setVisibility(View.VISIBLE);
-        if(progressDialog != null){
-            progressDialog.dismiss();
-        }
     }
 
     @Override
@@ -228,5 +222,23 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         }
         downloadAdapter.notifyDataSetChanged();
         this.charLists.clear();
+    }
+
+    private void showProgressDialog(){
+        if(alertDialogBuilder == null){
+            alertDialogBuilder = new AlertDialog.Builder(this);
+            View v = View.inflate(this,R.layout.bounce_ball_view,null);
+            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
+            ballView.start();
+            alertDialogBuilder.setView(v);
+            alertDialogBuilder.setCancelable(false);
+        }
+        alertDialog = alertDialogBuilder.show();
+    }
+
+    private void closeProgressDialog(){
+        if(alertDialog != null){
+            alertDialog.dismiss();
+        }
     }
 }

@@ -2,6 +2,8 @@ package com.example.animation.Class;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.Date;
+
 /**
  * Created by 刘通 on 2017/3/23.
  */
@@ -11,6 +13,16 @@ public class HistorySearch extends DataSupport {
     public String searchName;
 
     public String type;
+
+    public Date date;
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
 
     public String getType() {
         return type;

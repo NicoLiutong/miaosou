@@ -2,6 +2,7 @@ package com.example.animation;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import com.example.animation.Aaapter.ComicSearchResultAdapter;
 import com.example.animation.Class.ComicSearchResultList;
 import com.example.animation.Fragment.AnimationFragment;
+import com.example.animation.view.BounceBallView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,6 +26,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComicSearchResult extends AppCompatActivity {
+
+    private AlertDialog.Builder alertDialogBuilder;
+
+    private AlertDialog alertDialog;
 
     private String comicName;
 
@@ -74,22 +80,24 @@ public class ComicSearchResult extends AppCompatActivity {
         //查詢搜索結果，並顯示
     private void queryComicResult(){
             resultLists.clear();
+        showProgressDialog();
         new Thread(){
             @Override
             public void run() {
                 super.run();
                 try{
+
                     Document document = Jsoup.connect(comicSearchUrl).timeout(3000).post();
-                    Element comicResults = document.select("div.content").get(0);
-                    Elements comics = comicResults.select("li");
-                    for(Element comic:comics){
-                        ComicSearchResultList resultList = new ComicSearchResultList();
-                        resultList.setComicUrl("https://nyaso.com" + comic.select("a").get(0).attr("href"));
-                        resultList.setComicPages(comic.select("i").get(0).text());
-                        resultList.setComicName(comic.select("span").get(0).text());
-                        resultList.setComicImageUrl("https:" + comic.select("img").attr("src"));
-                        resultLists.add(resultList);
-                    }
+                        Element comicResults = document.select("div.content").get(0);
+                        Elements comics = comicResults.select("li");
+                        for (Element comic : comics) {
+                            ComicSearchResultList resultList = new ComicSearchResultList();
+                            resultList.setComicUrl("https://nyaso.com" + comic.select("a").get(0).attr("href"));
+                            resultList.setComicPages(comic.select("i").get(0).text());
+                            resultList.setComicName(comic.select("span").get(0).text());
+                            resultList.setComicImageUrl("https:" + comic.select("img").attr("src"));
+                            resultLists.add(resultList);
+                        }
 
                     /*for(int i = 0;i < resultLists.size();i++){
                         Log.d("url",resultLists.get(i).getComicUrl());
@@ -97,6 +105,7 @@ public class ComicSearchResult extends AppCompatActivity {
                         Log.d("name",resultLists.get(i).getComicName());
                         Log.d("imageurl",resultLists.get(i).getComicImageUrl());
                     }*/
+
                 }
                 catch (IOException e){
                     e.printStackTrace();
@@ -105,6 +114,7 @@ public class ComicSearchResult extends AppCompatActivity {
                 ComicSearchResult.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        closeProgressDialog();
                         if(resultLists.isEmpty()){
                             comicSearchNoElementView.setVisibility(View.VISIBLE);
                             comicSearchRecyclerview.setVisibility(View.GONE);
@@ -121,5 +131,23 @@ public class ComicSearchResult extends AppCompatActivity {
         }.start();
     }
 
+    private void showProgressDialog(){
+        if(alertDialogBuilder == null){
+            alertDialogBuilder = new AlertDialog.Builder(this);
+            View v = View.inflate(this,R.layout.bounce_ball_view,null);
+            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
+            ballView.start();
+            alertDialogBuilder.setView(v);
+            //progressDialog.setMessage("正在加载...");
+            alertDialogBuilder.setCancelable(false);
+        }
+        alertDialog = alertDialogBuilder.show();
+    }
+
+    private void closeProgressDialog(){
+        if(alertDialog != null){
+            alertDialog.dismiss();
+        }
+    }
 }
 

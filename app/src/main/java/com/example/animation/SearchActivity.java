@@ -25,15 +25,16 @@ import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
-import static org.litepal.crud.DataSupport.where;
 
 public class SearchActivity extends AppCompatActivity {
 
     private static final int ANIMATION = 0;
 
     private static final int COMIC = 1;
+
+    private static final int MUSIC = 3;
 
     private Button searchBackButton;
 
@@ -59,6 +60,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private final String comicUrl = "https://nyaso.com/man/";
 
+    private final String musicUrl = "https://nyaso.com/yin/";
+
     private String searchUrl;
 
     private int type;
@@ -68,14 +71,21 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search);
+
+        historySearches = DataSupport.findAll(HistorySearch.class);
+        if(historySearches.size() != 0 && historySearches.get(0).date == null){
+            DataSupport.deleteAll(HistorySearch.class);
+        }
+
         searchBackButton = (Button) findViewById(R.id.search_back);
         searchEditText = (EditText) findViewById(R.id.et_search);           //搜素輸入框
         searchListView = (ListView) findViewById(R.id.search_list);         //歷史搜索記錄
         searchClear = (TextView) findViewById(R.id.tv_clear);       //清除歷史搜索記錄
         searchSpinner = (Spinner) findViewById(R.id.search_spinner);        //Spinner彈框，用於選擇搜索的類型
-        //spinner添加“漫畫”和“動漫”
+        //spinner添加“漫畫”,“動漫”,"音乐"
         spinnerList.add("动漫");
         spinnerList.add("漫画");
+        spinnerList.add("音乐");
         //設置spinner的adapter
         spinnerAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1,spinnerList);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -86,7 +96,7 @@ public class SearchActivity extends AppCompatActivity {
         //初始化搜索類型，搜索url，spinner的顯示，輸入框的提示
         searchUrl = animationUrl;
         type = ANIMATION;
-        SpannableString hint = new SpannableString("请输入动漫名称");
+        final SpannableString hint = new SpannableString("请输入动漫名称");
         searchEditText.setHint(hint);
 
         SQLiteDatabase db = Connector.getDatabase();
@@ -103,7 +113,14 @@ public class SearchActivity extends AppCompatActivity {
                     SpannableString hint = new SpannableString("请输入动漫名称");
                     searchEditText.setHint(hint);
                     upDateList();
-               }
+               }else if (item.equals("音乐")){
+                    searchUrl = musicUrl;
+                    type = MUSIC;
+                    SpannableString hint = new SpannableString("请输入音乐名称");
+                    searchEditText.setHint(hint);
+                    upDateList();
+
+                }
                else {
                     searchUrl = comicUrl;
                     type = COMIC;
@@ -126,7 +143,11 @@ public class SearchActivity extends AppCompatActivity {
                 if(type == ANIMATION){
                 DataSupport.deleteAll(HistorySearch.class,"type = ?","animation");
                 upDateList();
-                }else {
+                }else if(type == MUSIC){
+                    DataSupport.deleteAll(HistorySearch.class,"type = ?","music");
+                    upDateList();
+                }
+                else {
                     DataSupport.deleteAll(HistorySearch.class,"type = ?","comic");
                     upDateList();
                 }
@@ -141,11 +162,12 @@ public class SearchActivity extends AppCompatActivity {
                     ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
                             getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     if (type == ANIMATION) {
-                        historySearches = where("searchName = ? and type = ?", searchEditText.getText().toString(),"animation").find(HistorySearch.class);
+                        historySearches = DataSupport.where("searchName = ? and type = ?", searchEditText.getText().toString(),"animation").find(HistorySearch.class);
                         if (historySearches.isEmpty()) {
                             HistorySearch historySearch = new HistorySearch();
                             historySearch.setSearchName(searchEditText.getText().toString());
                             historySearch.setType("animation");
+                            historySearch.setDate(new Date(System.currentTimeMillis()));
                             historySearch.save();
                             upDateList();
                         }
@@ -153,13 +175,28 @@ public class SearchActivity extends AppCompatActivity {
                         intent.putExtra(AnimationFragment.ANIMATION_NAME, searchEditText.getText().toString());
                         intent.putExtra(AnimationFragment.ANIMATION_URL, searchUrl + searchEditText.getText().toString() + ".html");
                         SearchActivity.this.startActivity(intent);
+                    }else if(type == MUSIC){
+                        historySearches = DataSupport.where("searchName = ? and type = ?", searchEditText.getText().toString(),"music").find(HistorySearch.class);
+                        if (historySearches.isEmpty()) {
+                            HistorySearch historySearch = new HistorySearch();
+                            historySearch.setSearchName(searchEditText.getText().toString());
+                            historySearch.setType("music");
+                            historySearch.setDate(new Date(System.currentTimeMillis()));
+                            historySearch.save();
+                            upDateList();
+                        }
+                        Intent intent = new Intent(SearchActivity.this, BasicWebActivity.class);
+                        intent.putExtra(AnimationFragment.ANIMATION_URL,musicUrl + searchEditText.getText().toString() + ".html");
+                        SearchActivity.this.startActivity(intent);
+
                     }
                     else {
-                        historySearches = where("searchName = ? and type = ?", searchEditText.getText().toString(),"comic").find(HistorySearch.class);
+                        historySearches = DataSupport.where("searchName = ? and type = ?", searchEditText.getText().toString(),"comic").find(HistorySearch.class);
                         if (historySearches.isEmpty()) {
                             HistorySearch historySearch = new HistorySearch();
                             historySearch.setSearchName(searchEditText.getText().toString());
                             historySearch.setType("comic");
+                            historySearch.setDate(new Date(System.currentTimeMillis()));
                             historySearch.save();
                             upDateList();
                         }
@@ -183,7 +220,12 @@ public class SearchActivity extends AppCompatActivity {
                 intent.putExtra(AnimationFragment.ANIMATION_NAME,searchName);
                 intent.putExtra(AnimationFragment.ANIMATION_URL,searchUrl + searchName + ".html");
                 SearchActivity.this.startActivity(intent);
-                }else{
+                }else if(type == MUSIC){
+                    Intent intent = new Intent(SearchActivity.this, BasicWebActivity.class);
+                    intent.putExtra(AnimationFragment.ANIMATION_URL,musicUrl + searchName + ".html");
+                    SearchActivity.this.startActivity(intent);
+                }
+                else{
                     Intent intent = new Intent(SearchActivity.this, ComicSearchResult.class);
                     intent.putExtra(AnimationFragment.ANIMATION_NAME, searchName);
                     intent.putExtra(AnimationFragment.ANIMATION_URL, comicUrl + searchName + ".html");
@@ -204,13 +246,17 @@ public class SearchActivity extends AppCompatActivity {
     private void upDateList(){
         historySearchList.clear();
         if(type == ANIMATION){
-        historySearches = where("type = ?","animation").find(HistorySearch.class);
-        }else {
-            historySearches = where("type = ?","comic").find(HistorySearch.class);
+        historySearches = DataSupport.where("type = ?","animation").order("date desc").find(HistorySearch.class);
+        }else if(type == MUSIC){
+            historySearches = DataSupport.where("type = ?","music").order("date desc").find(HistorySearch.class);
+    }
+        else {
+            historySearches = DataSupport.where("type = ?","comic").order("date desc").find(HistorySearch.class);
         }
-        for(HistorySearch searchResult:historySearches){
-            historySearchList.add(searchResult.getSearchName());
-        }
-        adapter.notifyDataSetChanged();
+
+            for (HistorySearch searchResult : historySearches) {
+                historySearchList.add(searchResult.getSearchName());
+            }
+            adapter.notifyDataSetChanged();
     }
 }

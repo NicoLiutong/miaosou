@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.my_favourity:
                 Intent intent = new Intent(MainActivity.this,MyFavourityActivity.class);
                 MainActivity.this.startActivity(intent);
+                break;
             case R.id.my_coin:
                 NiceDialog.init()
                         .setLayoutId(R.layout.pay_author)

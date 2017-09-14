@@ -88,7 +88,7 @@ public class ComicReadActivity extends AppCompatActivity {
                     currentMaxPagePosition = currentMaxPagePosition + 1;
                     ImageView imageView = new ImageView(getApplicationContext());
                     //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).placeholder(R.drawable.loading).into(imageView);
+                    Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView);
                     imageViews.add(imageView);
                     pageAdapter.notifyDataSetChanged();
                 }
@@ -158,17 +158,17 @@ public class ComicReadActivity extends AppCompatActivity {
             currentMaxPagePosition = 1;
             ImageView imageView1 = new ImageView(getApplicationContext());
             //imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).into(imageView1);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView1);
             imageViews.add(imageView1);
             ImageView imageView2 = new ImageView(getApplicationContext());
             //imageView2.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).placeholder(R.drawable.loading).into(imageView2);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView2);
             imageViews.add(imageView2);
         }else if(comicImageUrl.size() == 1){
             currentMaxPagePosition = 0;
             ImageView imageView1 = new ImageView(getApplicationContext());
             //imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).into(imageView1);
+            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView1);
             imageViews.add(imageView1);
         }
     }
