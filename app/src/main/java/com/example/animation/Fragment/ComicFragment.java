@@ -387,6 +387,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
     private void closeProgressDialog(){
         if(alertDialog != null){
             alertDialog.dismiss();
+            alertDialogBuilder = null;
+            alertDialog = null;
         }
     }
 }
