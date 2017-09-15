@@ -108,7 +108,6 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                 try {
                     isNextPages = false;
                     Document document = Jsoup.connect(pageUrl).timeout(5000).post();
-                        if(document != null && document.toString().length() != 0){
                         Elements allDownloads = document.getElementsByTag("tbody");
                         for (Element downloadlist : allDownloads) {
                             Elements downloads = downloadlist.select("tr");
@@ -144,15 +143,6 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
                                 isNextPages = true;
                             }
-                        }
-                    }else {
-                            DownloadItem downloadItem = new DownloadItem();
-                            downloadItem.setDownloadPage(1);
-                            downloadItem.setDownloadNumber("");
-                            downloadItem.setDownloadItem("搜索不到资源");
-                            downloadItem.setDownloadMessage("");
-                            downloadItem.setDownloadUrl("");
-                            downloadItem.save();
                         }
                 } catch (IOException e) {
                     e.printStackTrace();
