@@ -147,6 +147,8 @@ public class ComicSearchResult extends AppCompatActivity {
     private void closeProgressDialog(){
         if(alertDialog != null){
             alertDialog.dismiss();
+            alertDialogBuilder = null;
+            alertDialog = null;
         }
     }
 }
