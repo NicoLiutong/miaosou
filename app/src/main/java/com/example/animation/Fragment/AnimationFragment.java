@@ -357,6 +357,8 @@ public class AnimationFragment extends Fragment {
     private void closeProgressDialog(){
         if(alertDialog != null){
             alertDialog.dismiss();
+            alertDialogBuilder = null;
+            alertDialog = null;
         }
     }
 }
