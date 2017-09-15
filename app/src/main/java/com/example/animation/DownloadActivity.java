@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -44,6 +45,8 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     private TextView pageText;
 
+    private TextView downloadFailText;
+
     private AlertDialog.Builder alertDialogBuilder;
 
     private AlertDialog alertDialog;
@@ -62,6 +65,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     private int maxPage;
 
+    private boolean downloadFail = false;
 
     private boolean isNextPages;
     @Override
@@ -88,6 +92,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         returnPageButton = (Button) findViewById(R.id.return_page);     //返回上一頁
         nextPageButton = (Button) findViewById(R.id.next_page);     //下一頁
         pageText = (TextView) findViewById(R.id.pages);     //頁碼顯示
+        downloadFailText = (TextView) findViewById(R.id.download_fali);
         pageText.setText(String.valueOf(page));
         animationTitle.setText(animationName);
         backButton.setOnClickListener(this);
@@ -111,10 +116,18 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                         Elements allDownloads = document.getElementsByTag("tbody");
                         for (Element downloadlist : allDownloads) {
                             Elements downloads = downloadlist.select("tr");
-                            for (Element download : downloads) {
-                                Element downloadNumber = download.select("td").first();
-                                Element downloadName = download.select("td").get(1).select("a").get(0);
-                                Element downloadMessage = download.select("td").get(1).select("p").get(0);
+
+                            Element es = downloads.get(0).select("td").get(1);
+                            Log.d("download",es.text().split(" ")[0]);
+
+                            if (downloads.get(0).select("td").get(1).text().split(" ")[0].equals("唔，喵搜娘检索不到相关动画资源")) {
+                                downloadFail = true;
+                            } else{
+                                downloadFail = false;
+                                for (Element download : downloads) {
+                                    Element downloadNumber = download.select("td").first();
+                                    Element downloadName = download.select("td").get(1).select("a").get(0);
+                                    Element downloadMessage = download.select("td").get(1).select("p").get(0);
 
 
                                 /*Log.d("number",downloadNumber.text());
@@ -123,13 +136,14 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                                 Log.d("message",downloadMessage.text());
                                 Log.d("page",page + "");*/
 
-                                DownloadItem downloadItem = new DownloadItem();
-                                downloadItem.setDownloadPage(page);
-                                downloadItem.setDownloadNumber(downloadNumber.text());
-                                downloadItem.setDownloadItem(downloadName.text());
-                                downloadItem.setDownloadMessage(downloadMessage.text());
-                                downloadItem.setDownloadUrl("https://nyaso.com" + downloadName.attr("href"));
-                                downloadItem.save();
+                                    DownloadItem downloadItem = new DownloadItem();
+                                    downloadItem.setDownloadPage(page);
+                                    downloadItem.setDownloadNumber(downloadNumber.text());
+                                    downloadItem.setDownloadItem(downloadName.text());
+                                    downloadItem.setDownloadMessage(downloadMessage.text());
+                                    downloadItem.setDownloadUrl("https://nyaso.com" + downloadName.attr("href"));
+                                    downloadItem.save();
+                                }
                             }
                         }
                         //判斷是否到達最後一頁：如果是則將maxpage設置為這頁，isnextpages設置為false
@@ -151,9 +165,15 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void run() {
                         closeProgressDialog();
-                        pageText.setText("第" + page + "页");
-                        charLists = DataSupport.where("downloadPage = ?",String.valueOf(page)).find(DownloadItem.class);
-                        updateData(charLists);
+                        if(downloadFail){
+                            downloadFailText.setText("唔，喵搜娘检索不到相关动画资源 ,,Ծ‸Ծ,,");
+                            downloadFailText.setVisibility(View.VISIBLE);
+                        }else {
+                            downloadFailText.setVisibility(View.GONE);
+                            pageText.setText("第" + page + "页");
+                            charLists = DataSupport.where("downloadPage = ?", String.valueOf(page)).find(DownloadItem.class);
+                            updateData(charLists);
+                        }
                     }
                 });
             }

@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -196,11 +195,11 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
                         String comicIntroduction = comic.select("h5").text();
                         String comicAuthor = comic.select("p").text();
 
-                        Log.d("comicUrl",comicUrl);
+                        /*Log.d("comicUrl",comicUrl);
                         Log.d("backgroundUrl",backgruondUrl);
                         Log.d("comocName",comicName);
                         Log.d("comicIntroduction",comicIntroduction);
-                        Log.d("comicAuthor",comicAuthor);
+                        Log.d("comicAuthor",comicAuthor);*/
 
                         ComicItem comicItem = new ComicItem();
                         comicItem.setComicUrl(comicUrl);
