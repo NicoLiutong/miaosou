@@ -217,7 +217,9 @@ public class AnimationFragment extends Fragment {
                     int i = 1;
                     Document document = Jsoup.connect("http://ouo.us/anime.html").timeout(3000).post();
                     //String dateName = pref.getString("datename","");
-                    if(document != null && document.toString().length() != 0){
+                    if(document.select("title").get(0).text().equals("这里什么都木有喔！- 喵阅ouo.us")){
+
+                    }else {
                         DataSupport.deleteAll(AnimationItem.class);
                         String date = document.select("option").get(0).text();
 

@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/my_coin"
-        android:icon="@drawable/ic_coin"
-        android:title="打赏"
+        android:id="@+id/my_signin"
+        android:icon="@drawable/ic_signin"
+        android:title="签到"
         app:showAsAction="always"
         />
 <item

@@ -29,11 +29,12 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.animation.Fragment.AnimationFragment;
 import com.example.animation.Fragment.ComicFragment;
-import com.othershe.nicedialog.NiceDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random; 
+import java.util.Random;
+
+import cn.waps.AppConnect;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //DemoApplication.setMainActivity(this);
         //XiaomiUpdateAgent.update(this);
+        //广告开启
+        AppConnect.getInstance("4ccc2526c7afd772c96d61e301721275","“default",this);
+
         imageUrl = setImageUrl();  //獲取圖片url
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.main_collapsingToolbar);
@@ -140,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        AppConnect.getInstance(this).close();
         //DemoApplication.setMainActivity(null);
     }
 
@@ -151,19 +156,23 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {   //菜單欄的點擊事件，點擊進入收藏activity
+        Intent intent = null;
         switch (item.getItemId()){
             case R.id.my_favourity:
-                Intent intent = new Intent(MainActivity.this,MyFavourityActivity.class);
+                intent = new Intent(MainActivity.this,MyFavourityActivity.class);
                 MainActivity.this.startActivity(intent);
                 break;
-            case R.id.my_coin:
-                NiceDialog.init()
-                        .setLayoutId(R.layout.pay_author)
+            case R.id.my_signin:
+                intent = new Intent(this,SignInActivity.class);
+                MainActivity.this.startActivity(intent);
+                /*NiceDialog.init()
+                        .setLayoutId(R.layout.sign_in)
                         .setDimAmount(0.7f)
                         .setOutCancel(true)
                         .setMargin(40)
                         .setShowBottom(false)
-                        .show(getSupportFragmentManager());
+                        .show(getSupportFragmentManager());*/
+
                 break;
         }
         return true;

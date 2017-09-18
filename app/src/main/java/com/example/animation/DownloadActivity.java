@@ -6,7 +6,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -116,10 +115,6 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                         Elements allDownloads = document.getElementsByTag("tbody");
                         for (Element downloadlist : allDownloads) {
                             Elements downloads = downloadlist.select("tr");
-
-                            Element es = downloads.get(0).select("td").get(1);
-                            Log.d("download",es.text().split(" ")[0]);
-
                             if (downloads.get(0).select("td").get(1).text().split(" ")[0].equals("唔，喵搜娘检索不到相关动画资源")) {
                                 downloadFail = true;
                             } else{
