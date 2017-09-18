@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //DemoApplication.setMainActivity(this);
         //XiaomiUpdateAgent.update(this);
+
         //广告开启
         AppConnect.getInstance("4ccc2526c7afd772c96d61e301721275","“default",this);
 
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         AppConnect.getInstance(this).close();
         //DemoApplication.setMainActivity(null);
     }
