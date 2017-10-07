@@ -1,6 +1,7 @@
 package com.example.animation;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bm.library.PhotoView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.example.animation.Aaapter.DepthPageTransformer;
 import com.example.animation.Aaapter.MyPageAdapter;
 import com.example.animation.Fragment.ComicFragment;
@@ -86,10 +91,12 @@ public class ComicReadActivity extends AppCompatActivity {
                     currentMaxPagePosition = comicImageUrl.size() - 1;
                 }else if(position == currentMaxPagePosition){
                     currentMaxPagePosition = currentMaxPagePosition + 1;
-                    ImageView imageView = new ImageView(getApplicationContext());
+                    PhotoView imageView = new PhotoView(getApplicationContext());
                     //imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView);
-                    imageViews.add(imageView);
+                    //Glide.with(getApplicationContext()).load(comicImageUrl.get(position + 1)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView);
+                    //imageViews.add(imageView);
+                    loadImage(comicImageUrl.get(position + 1),imageView);
+
                     pageAdapter.notifyDataSetChanged();
                 }
             }
@@ -156,20 +163,56 @@ public class ComicReadActivity extends AppCompatActivity {
         }*/
         if(comicImageUrl.size() >= 2){
             currentMaxPagePosition = 1;
-            ImageView imageView1 = new ImageView(getApplicationContext());
+            PhotoView imageView1 = new PhotoView(getApplicationContext());
             //imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView1);
-            imageViews.add(imageView1);
-            ImageView imageView2 = new ImageView(getApplicationContext());
+            //Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView1);
+            //imageViews.add(imageView1);
+            loadImage(comicImageUrl.get(0),imageView1);
+
+            PhotoView imageView2 = new PhotoView(getApplicationContext());
             //imageView2.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView2);
-            imageViews.add(imageView2);
+            //Glide.with(getApplicationContext()).load(comicImageUrl.get(1)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView2);
+            //imageViews.add(imageView2);
+            loadImage(comicImageUrl.get(1),imageView2);
+
+
         }else if(comicImageUrl.size() == 1){
             currentMaxPagePosition = 0;
-            ImageView imageView1 = new ImageView(getApplicationContext());
+            PhotoView imageView1 = new PhotoView(getApplicationContext());
             //imageView1.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView1);
-            imageViews.add(imageView1);
+            //Glide.with(getApplicationContext()).load(comicImageUrl.get(0)).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView1);
+            //imageViews.add(imageView1);
+            loadImage(comicImageUrl.get(0),imageView1);
         }
+    }
+
+    private void loadImage(final String comicImageUrl, final PhotoView imageView){
+        //Glide.with(getApplicationContext()).load(comicImageUrl).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(imageView);
+        Glide.with(getApplicationContext()).load(comicImageUrl).placeholder(R.drawable.loading).error(R.drawable.picture_loaderror).crossFade().into(new SimpleTarget<GlideDrawable>() {
+            @Override
+            public void onLoadStarted(Drawable placeholder) {
+                super.onLoadStarted(placeholder);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.disenable();
+                imageView.setImageDrawable(placeholder);
+            }
+
+            @Override
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.enable();
+                imageView.setImageDrawable(resource);
+            }
+
+            @Override
+            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                super.onLoadFailed(e, errorDrawable);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.disenable();
+                imageView.setImageDrawable(errorDrawable);
+            }
+        });
+        imageViews.add(imageView);
+
     }
 }

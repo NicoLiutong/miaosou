@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cn.waps.AppConnect;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int ANIMATION = 0;  
@@ -71,10 +69,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //DemoApplication.setMainActivity(this);
-        //XiaomiUpdateAgent.update(this);
-
-        //广告开启
-        AppConnect.getInstance("4ccc2526c7afd772c96d61e301721275","“default",this);
 
         imageUrl = setImageUrl();  //獲取圖片url
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -146,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
 
-        AppConnect.getInstance(this).close();
         //DemoApplication.setMainActivity(null);
     }
 

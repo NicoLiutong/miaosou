@@ -20,11 +20,5 @@
         android:id="@+id/signin_calendar"
         android:layout_width="match_parent"
         android:layout_height="300dp"/>
-<LinearLayout
-    android:id="@+id/ADLinearLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal"
-    android:layout_gravity="bottom"/>
+    
 </LinearLayout>

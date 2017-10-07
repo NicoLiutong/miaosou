@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.animation.view.CalendarView;
@@ -12,8 +11,6 @@ import com.example.animation.view.CalendarView;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import cn.waps.AppConnect;
 
 /**
  * Created by 刘通 on 2017/9/18.
@@ -44,9 +41,6 @@ public class SignInActivity extends AppCompatActivity {
         //editor.putInt("currentMonth",0);
         //editor.putString("selectDays","");
         //editor.apply();
-
-        LinearLayout advanceLayout = (LinearLayout) findViewById(R.id.ADLinearLayout);
-        AppConnect.getInstance(this).showBannerAd(this,advanceLayout);
 
         final TextView signinDateNumber = (TextView) findViewById(R.id.signin_text);
         CalendarView calendarView = (CalendarView) findViewById(R.id.signin_calendar);
