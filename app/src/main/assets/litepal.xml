@@ -5,10 +5,10 @@
     <version value="4" ></version>
 
     <list>
-        <mapping class="com.example.animation.Class.AnimationItem"/>
-        <mapping class="com.example.animation.Class.DownloadItem"/>
-        <mapping class="com.example.animation.Class.HistorySearch"/>
-        <mapping class="com.example.animation.Class.ComicItem"/>
-        <mapping class="com.example.animation.Class.ComicMessageItem"/>
+        <mapping class="com.example.animation.db.AnimationItem"/>
+        <mapping class="com.example.animation.db.DownloadItem"/>
+        <mapping class="com.example.animation.db.HistorySearch"/>
+        <mapping class="com.example.animation.db.ComicItem"/>
+        <mapping class="com.example.animation.db.ComicMessageItem"/>
     </list>
 </litepal>

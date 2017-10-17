@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">喵搜</string>
     <string name="animationList">喵搜</string>
+    <string name="menu_share">推荐给朋友</string>
+    <string name="share_app">二次元的天堂，动画、漫画应有尽有。%s：https://www.coolapk.com/apk/com.example.animation</string>
+    <string name="copyright">Copyright © 2015&#045;%d SWUST</string>
+    <string name="about_name">一只萌萌的Nico酱</string>
+    <string name="about_github">https://github.com/NicoLiutong</string>
+    <string name="about_author">关于</string>
+    <string name="share">分享</string>
+    <string name="about_exit">退出</string>
+
 </resources>

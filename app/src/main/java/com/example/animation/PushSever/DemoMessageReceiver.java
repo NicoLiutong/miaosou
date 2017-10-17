@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.example.animation.BasicWebActivity;
-import com.example.animation.ComicNumberActivity;
-import com.example.animation.DownloadActivity;
-import com.example.animation.Fragment.AnimationFragment;
-import com.example.animation.Fragment.ComicFragment;
-import com.example.animation.MainActivity;
+import com.example.animation.activity.BasicWebActivity;
+import com.example.animation.activity.ComicNumberActivity;
+import com.example.animation.activity.DownloadActivity;
+import com.example.animation.fragments.AnimationFragment;
+import com.example.animation.fragments.ComicFragment;
+import com.example.animation.activity.MainActivity;
 import com.xiaomi.mipush.sdk.ErrorCode;
 import com.xiaomi.mipush.sdk.MiPushClient;
 import com.xiaomi.mipush.sdk.MiPushCommandMessage;

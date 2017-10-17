@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">miaosou</string>
     <string name="animationList">miaosou</string>
+    <string name="menu_share">share friend</string>
+    <string name="share_app">Second dollar heaven, animation, comics have everything.%s：https://www.coolapk.com/apk/com.example.animation</string>
+    <string name="copyright">Copyright © 2015&#045;%d SWUST</string>
+    <string name="about_name">Nico</string>
+    <string name="about_github">https://github.com/NicoLiutong</string>
+    <string name="about_author">about</string>
+    <string name="share">share</string>
+    <string name="about_exit">exit</string>
 </resources>

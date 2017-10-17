@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:layout_alignParentTop="true"
+        android:id="@+id/ll_myfavourity"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:orientation="horizontal"
@@ -31,14 +32,25 @@
             />
     </LinearLayout>
 
-    <!--<LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_favourityRecyclerview"
+        android:layout_below="@id/ll_myfavourity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tv_myfavourity"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/ll_myfavourity"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="主人还没有收藏喵！！"
+        android:textColor="@color/gray"
+        />
+
+</RelativeLayout>

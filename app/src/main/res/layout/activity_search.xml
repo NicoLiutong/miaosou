@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
     android:orientation="vertical"
-    tools:context="com.example.animation.SearchActivity">
+    tools:context="com.example.animation.activity.SearchActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
