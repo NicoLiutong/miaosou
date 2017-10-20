@@ -330,6 +330,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Intent intent = null;
         switch (item.getItemId()){
+            case R.id.animation_news:
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                intent = new Intent(this,AnimationNewActivity.class);
+                MainActivity.this.startActivity(intent);
+                break;
             case R.id.my_favourity:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 intent = new Intent(MainActivity.this,MyFavourityActivity.class);

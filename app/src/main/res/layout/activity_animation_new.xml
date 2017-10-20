@@ -12,19 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:orientation="horizontal"
+        android:paddingLeft="55dp"
         android:paddingRight="55dp"
         android:background="@color/colorPrimary"
         >
-        <Button
-            android:id="@+id/bt_animation_news"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="25dp"
-            android:background="@drawable/back"  />
         <TextView
-            android:id="@+id/tv_news_news"
+            android:id="@+id/tv_bar_news_news"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -36,7 +29,7 @@
             android:textSize="15sp"
             />
         <TextView
-            android:id="@+id/tv_news_hot"
+            android:id="@+id/tv_bar_news_hot"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -48,7 +41,7 @@
             android:textSize="15sp"
             />
         <TextView
-            android:id="@+id/tv_news_tui"
+            android:id="@+id/tv_bar_news_tui"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

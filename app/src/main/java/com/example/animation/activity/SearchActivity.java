@@ -84,7 +84,7 @@ public class SearchActivity extends AppCompatActivity {
         searchClear = (TextView) findViewById(R.id.tv_clear);       //清除歷史搜索記錄
         searchSpinner = (Spinner) findViewById(R.id.search_spinner);        //Spinner彈框，用於選擇搜索的類型
         //spinner添加“漫畫”,“動漫”,"音乐"
-        spinnerList.add("动漫");
+        spinnerList.add("动画");
         spinnerList.add("漫画");
         spinnerList.add("音乐");
         //設置spinner的adapter
@@ -97,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
         //初始化搜索類型，搜索url，spinner的顯示，輸入框的提示
         searchUrl = animationUrl;
         type = ANIMATION;
-        final SpannableString hint = new SpannableString("请输入动漫名称");
+        final SpannableString hint = new SpannableString("请输入动画名称");
         searchEditText.setHint(hint);
 
         SQLiteDatabase db = Connector.getDatabase();
@@ -108,10 +108,10 @@ public class SearchActivity extends AppCompatActivity {
         @Override
          public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                String item = (String) spinnerAdapter.getItem(position);
-                if(item.equals("动漫")){
+                if(item.equals("动画")){
                     searchUrl = animationUrl;
                     type = ANIMATION;
-                    SpannableString hint = new SpannableString("请输入动漫名称");
+                    SpannableString hint = new SpannableString("请输入动画名称");
                     searchEditText.setHint(hint);
                     upDateList();
                }else if (item.equals("音乐")){
