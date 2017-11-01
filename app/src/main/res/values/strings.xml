@@ -10,4 +10,5 @@
     <string name="share">share</string>
     <string name="about_exit">exit</string>
     <string name="animation_news">news</string>
+    <string name="animation_picture">pictures</string>
 </resources>

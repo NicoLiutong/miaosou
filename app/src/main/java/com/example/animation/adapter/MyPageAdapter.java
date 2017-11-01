@@ -1,9 +1,8 @@
 package com.example.animation.adapter;
 
-import android.support.v4.view.PagerAdapter;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
 
@@ -11,33 +10,22 @@ import java.util.List;
  * Created by 刘通 on 2017/8/8.
  */
 
-public class MyPageAdapter extends PagerAdapter {
+public class MyPageAdapter extends FragmentPagerAdapter {
 
-    private List<ImageView> views;
+    private List<Fragment> mFragmentList;
 
-    public MyPageAdapter(List<ImageView> views){
-        this.views = views;
+    public MyPageAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+        super(fm);
+        mFragmentList = fragmentList;
     }
 
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-        container.addView(views.get(position));
-        return views.get(position);
-    }
-
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView(views.get(position));
+    public Fragment getItem(int position) {
+        return mFragmentList.get(position);
     }
 
     @Override
     public int getCount() {
-        return views.size();
-    }
-
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == object;
+        return mFragmentList.size();
     }
 }

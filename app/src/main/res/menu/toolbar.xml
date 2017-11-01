@@ -7,6 +7,11 @@
         android:title="@string/animation_news"
         app:showAsAction="always"/>
     <item
+        android:id="@+id/animation_picture"
+        android:icon="@drawable/ic_animation_picture"
+        android:title="@string/animation_picture"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/my_signin"
         android:icon="@drawable/ic_signin"
         android:title="签到"

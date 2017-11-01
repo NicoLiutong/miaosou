@@ -109,6 +109,10 @@
 
         <activity android:name=".activity.AnimationNewActivity">
         </activity>
+        <activity android:name=".activity.AnimationPicture">
+        </activity>
+        <activity android:name=".activity.PictureShowActivity">
+        </activity>
     </application>
 
 </manifest>

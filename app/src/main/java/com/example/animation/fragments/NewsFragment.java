@@ -46,7 +46,7 @@ public class NewsFragment extends Fragment {
     private RecyclerView newsRecycler;
     private NewsAdapter newsAdapter;
 
-    private int type;
+    private int type = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -136,7 +136,7 @@ public class NewsFragment extends Fragment {
                         String newsUrl = "https://ouo.us" + newsElement.select("a").get(0).attr("href");
                         String imageUrl = "https://ouo.us" + newsElement.select("img").get(0).attr("src");
                         String newsTitle = newsElement.select("h4").text();
-                        String newsContent = newsElement.select("h5").text().split(" ")[1];
+                        String newsContent = newsElement.select("h5").text().substring(2);
                         String newsInformation = newsElement.select("p").text();
                         String newsTime = newsInformation.split("/")[0];
                         String newsAuthor = newsInformation.split("/")[1];

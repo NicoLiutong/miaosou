@@ -53,9 +53,7 @@ public class ComicNumberAdapter extends RecyclerView.Adapter<ComicNumberAdapter.
                 //Log.d("readnow",DataSupport.where("comicUrl = ?",comicNumberList.getComicUrl()).find(ComicMessageItem.class).get(0).getReadNow());
 
                 Intent intent = new Intent(context, ComicReadActivity.class);
-                intent.putExtra(ComicFragment.COMICREADURL,comicNumberList.getComicUrl());
-                intent.putExtra(ComicFragment.COMICREADEPISODES,comicNumberList.getComicEpisodes());
-                intent.putExtra(ComicFragment.COMICREADPAGE,comicNumberList.getComicPages());
+                intent.putExtra(ComicFragment.COMICREADURL,comicNumberList.getComicPagesUrl());
                 context.startActivity(intent);
             }
         });

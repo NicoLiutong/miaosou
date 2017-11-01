@@ -354,6 +354,11 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 finish();
                 break;
+            case R.id.animation_picture:
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                intent = new Intent(this,AnimationPicture.class);
+                this.startActivity(intent);
+                break;
         }
         return true;
     }
