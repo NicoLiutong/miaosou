@@ -35,6 +35,8 @@ import com.bumptech.glide.Glide;
 import com.example.animation.fragments.AnimationFragment;
 import com.example.animation.fragments.ComicFragment;
 import com.example.animation.R;
+import com.example.animation.pay.Config;
+import com.example.animation.pay.MiniPayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -344,6 +346,10 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 intent = new Intent(this,SignInActivity.class);
                 MainActivity.this.startActivity(intent);
+                break;
+            case R.id.pay_author:
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                MiniPayUtils.setupPay(this,new Config.Builder("FKX01294KSKKFN2F9ESS47",R.drawable.ic_zhufubao_pay,R.drawable.ic_weixin_pay).build());
                 break;
             case R.id.about_author:
                 mDrawerLayout.closeDrawer(GravityCompat.START);

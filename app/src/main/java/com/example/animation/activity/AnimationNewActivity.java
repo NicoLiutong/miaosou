@@ -38,12 +38,9 @@ public class AnimationNewActivity extends AppCompatActivity implements ViewPager
         tvtuiNews.setOnClickListener(this);
         vpNews = (ViewPager) findViewById(R.id.vp_news);
         newsFragmentLists = new ArrayList<>();
-        newNewsFragment = new NewsFragment();
-        newNewsFragment.setType(NewsFragment.NEWSNEWS);
-        hotNewsFragment = new NewsFragment();
-        hotNewsFragment.setType(NewsFragment.NEWSHOT);
-        tuiNewsFragment = new NewsFragment();
-        tuiNewsFragment.setType(NewsFragment.NEWSTUI);
+        newNewsFragment = NewsFragment.newNewsFragment(NewsFragment.NEWSNEWS);
+        hotNewsFragment = NewsFragment.newNewsFragment(NewsFragment.NEWSHOT);
+        tuiNewsFragment = NewsFragment.newNewsFragment(NewsFragment.NEWSTUI);
         newsFragmentLists.add(newNewsFragment);
         newsFragmentLists.add(hotNewsFragment);
         newsFragmentLists.add(tuiNewsFragment);

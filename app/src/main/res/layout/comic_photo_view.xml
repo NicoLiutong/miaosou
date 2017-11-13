@@ -1,9 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.bm.library.PhotoView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pv_comic_read"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scaleType="fitCenter">
+    android:scaleType="centerInside">
+    <LinearLayout
+        android:id="@+id/ll_loading_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_loading_currentpage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:layout_margin="5dp"
+            />
+        <com.example.animation.view.RoundProgressBarWithNumber
+            android:id="@+id/pb_loading_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:progress="0"
+            android:layout_margin="5dp"
+            app:progress_text_visibility="visible"
+            app:progress_text_color="@color/pink"
+            app:progress_reached_color="@color/pink"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_loading_failed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        >
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/picture_loaderror"
+            android:layout_margin="10dp"/>
+        <Button
+            android:id="@+id/bt_loading_fail"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/roundbtn_tran"
+            android:text="重新加载"
+            android:textColor="@color/pink"/>
 
-</com.bm.library.PhotoView>
+    </LinearLayout>
+    <com.bm.library.PhotoView
+        android:id="@+id/pv_comic_read"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitCenter"/>
+</RelativeLayout>

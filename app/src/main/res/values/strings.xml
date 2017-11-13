@@ -11,4 +11,10 @@
     <string name="about_exit">exit</string>
     <string name="animation_news">news</string>
     <string name="animation_picture">pictures</string>
+    <string name="pay_author">donate author</string>
+
+    <string name="wei_zhi_title">donate·WeiXin</string>
+    <string name="wei_zhi_tip">WeiXin scan, or click \ "go donate \", in the upper right corner of WeChat page \ "select the qr code \" from the album.</string>
+    <string name="ali_zhi_title">donate·ZhiFuBao</string>
+    <string name="ali_zhi_tip">ZhiFuBao scan, or click \ "to donate \"\nit is our greatest motivation</string>
 </resources>

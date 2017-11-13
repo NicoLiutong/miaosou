@@ -8,13 +8,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.animation.R;
 import com.example.animation.adapter.DividerItemDecoration;
 import com.example.animation.adapter.NewsAdapter;
 import com.example.animation.db.News;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,11 +30,12 @@ import java.util.List;
  * Created by 刘通 on 2017/10/17.
  */
 
-public class NewsFragment extends Fragment {
+public class NewsFragment extends Fragment implements OnRefreshLoadmoreListener{
 
     public static final int NEWSNEWS = 1;
     public static final int NEWSHOT = 2;
     public static final int NEWSTUI = 3;
+    private static final String TYPE = "type";
     private List<News> newsList;
 
     private static final String newNewsUrl = "https://ouo.us/news/new.html&p=";
@@ -41,16 +43,24 @@ public class NewsFragment extends Fragment {
     private static final String tuiNewsUrl = "https://ouo.us/news/tui.html&p=";
     private int page = 0;
     private boolean haveNext = true;
-    private boolean isLoading = false;
-    private TextView tvLoading;
     private RecyclerView newsRecycler;
+    private SmartRefreshLayout smartRefreshLayout;
     private NewsAdapter newsAdapter;
 
     private int type = 0;
 
+    public static NewsFragment newNewsFragment(int type){
+        NewsFragment newsFragment = new NewsFragment();
+        Bundle bundle = new Bundle(1);
+        bundle.putInt(TYPE,type);
+        newsFragment.setArguments(bundle);
+        return newsFragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        type = getArguments().getInt(TYPE);
         page = 0;
         haveNext = true;
         newsList = new ArrayList<>();
@@ -61,7 +71,8 @@ public class NewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.news_layout,container,false);
         newsRecycler = (RecyclerView) view.findViewById(R.id.rv_news);
-        tvLoading = (TextView) view.findViewById(R.id.tv_loading);
+        smartRefreshLayout = (SmartRefreshLayout) view.findViewById(R.id.smart_refresh_layout_news);
+        smartRefreshLayout.setOnRefreshLoadmoreListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         newsRecycler.setLayoutManager(layoutManager);
@@ -74,30 +85,15 @@ public class NewsFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loadData();
-        newsRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                if(!isLoading) {
-                    if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                        if (!recyclerView.canScrollVertically(1)) {
-                            loadData();
-                        }
-                    }
-                }
-            }
-        });
+        smartRefreshLayout.autoRefresh();
     }
 
-    public void setType(int type){
-        this.type = type;
-    }
     private void loadData(){
         if(haveNext){
             page = page + 1;
         }else {
-            Toast.makeText(getContext(),"已经到底了",Toast.LENGTH_SHORT).show();
+            smartRefreshLayout.setLoadmoreFinished(true);
+            smartRefreshLayout.finishLoadmore();
             return;
         }
         switch (type) {
@@ -118,8 +114,6 @@ public class NewsFragment extends Fragment {
     }
 
     private void queryNews(final String newsUrl){
-        isLoading = true;
-        tvLoading.setVisibility(View.VISIBLE);
         new Thread(){
             @Override
             public void run() {
@@ -161,8 +155,8 @@ public class NewsFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        isLoading = false;
-                        tvLoading.setVisibility(View.GONE);
+                        smartRefreshLayout.finishRefresh();
+                        smartRefreshLayout.finishLoadmore();
                         newsAdapter.notifyDataSetChanged();
                     }
                 })
@@ -170,5 +164,19 @@ public class NewsFragment extends Fragment {
             }
         }.start();
 
+    }
+
+    @Override
+    public void onLoadmore(RefreshLayout refreshlayout) {
+        loadData();
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshlayout) {
+        page = 0;
+        haveNext = true;
+        smartRefreshLayout.setLoadmoreFinished(false);
+        newsList.clear();
+        loadData();
     }
 }

@@ -36,8 +36,23 @@ public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.PictureH
     }
 
     @Override
-    public void onBindViewHolder(PictureHolder holder, final int position) {
-        Glide.with(mContext).load(imageUrlList.get(position).get(1)).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.ivImage);
+    public void onBindViewHolder(final PictureHolder holder, final int position) {
+        Glide.with(mContext).load(imageUrlList.get(position).get(1)).asBitmap().placeholder(R.drawable.loading_picture).diskCacheStrategy(DiskCacheStrategy.SOURCE).into(holder.ivImage);/*new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                int width = holder.ivImage.getMeasuredWidth()-80;
+                //原始图片宽高
+                int imageWidth = resource.getWidth();
+                int imageHeight = resource.getHeight();
+                //按比例收缩图片
+                float ratio=(float) ((imageWidth*1.0)/(width*1.0));
+                int height=(int) (imageHeight*1.0/ratio);
+                ViewGroup.LayoutParams params = holder.ivImage.getLayoutParams();
+                params.width=width+80;
+                params.height=height+80;
+                holder.ivImage.setImageBitmap(resource);
+            }
+        });*/
         holder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

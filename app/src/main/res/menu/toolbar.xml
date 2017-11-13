@@ -17,11 +17,16 @@
         android:title="签到"
         app:showAsAction="always"
         />
-<item
-    android:id="@+id/my_favourity"
-    android:icon="@drawable/myfavourity"
-    android:title="我的收藏"
-    app:showAsAction="always"/>
+    <item
+        android:id="@+id/my_favourity"
+        android:icon="@drawable/myfavourity"
+        android:title="我的收藏"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/pay_author"
+        android:icon="@drawable/ic_menu_pay"
+        android:title="@string/pay_author"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/about_author"
         android:icon="@drawable/ic_menu_about"

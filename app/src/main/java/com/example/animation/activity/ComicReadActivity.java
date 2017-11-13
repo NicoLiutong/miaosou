@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.animation.R;
@@ -29,11 +30,15 @@ public class ComicReadActivity extends AppCompatActivity {
 
     private String comicReadPage;
 
+    private String pictureId;
+
     private int currentReadPage = 1;
 
     private Button comicReadBack;
 
     private TextView tvComicReadPage;
+
+    private ProgressBar progressBar;
 
     private List<Fragment> comicReadFragmentList = new ArrayList<>();
     private List<String> comicImageUrl = new ArrayList<>();
@@ -49,10 +54,13 @@ public class ComicReadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comic_read);
         Intent intent = getIntent();
-        comicUrl = intent.getStringExtra(ComicFragment.COMICREADURL).replace(".html","_2.html");
+        comicUrl = intent.getStringExtra(ComicFragment.COMICREADURL);
+        pictureId = comicUrl.substring(comicUrl.lastIndexOf("/") + 1,comicUrl.lastIndexOf("."));
+                //.replace(".html","_2.html");
         //Log.d("url",comicUrl);
         comicReadBack = (Button) findViewById(R.id.comic_readBack);
         tvComicReadPage = (TextView) findViewById(R.id.comic_readPage);
+        progressBar = (ProgressBar) findViewById(R.id.pb_comic_progress);
         comicPagesText = (TextView) findViewById(R.id.read_comic_pages);
         comicReadBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +77,7 @@ public class ComicReadActivity extends AppCompatActivity {
     }
 
     private void queryComicUrl(){
+        progressBar.setVisibility(View.VISIBLE);
         new Thread(){
             @Override
             public void run() {
@@ -94,6 +103,7 @@ public class ComicReadActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        progressBar.setVisibility(View.INVISIBLE);
                         setView();
                     }
                 });
@@ -122,7 +132,7 @@ public class ComicReadActivity extends AppCompatActivity {
             }
         });
         for(int i = 0;i < comicImageUrl.size();i ++){
-            ComicReadFragment comicReadFragment = ComicReadFragment.newInstance(comicImageUrl.get(i));
+            ComicReadFragment comicReadFragment = ComicReadFragment.newInstance(comicImageUrl.get(i),i+1,pictureId + "-" + comicReadPage + "-" + (i + 1),ComicReadFragment.COMIC);
             comicReadFragmentList.add(comicReadFragment);
         }
         pageAdapter.notifyDataSetChanged();
