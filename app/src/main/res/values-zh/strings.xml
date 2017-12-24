@@ -13,6 +13,8 @@
     <string name="animation_picture">精美图片</string>
     <string name="pay_author">打赏作者</string>
 
+    <string name="weixin_hao">微信公众号</string>
+    <string name="qq_qun">qq群</string>
     <string name="wei_zhi_title">捐赠·微信</string>
     <string name="wei_zhi_tip">微信扫一扫，或者点击\"去捐赠\"，在微信页面右上角菜单中 \"从相册中选取二维码\"。</string>
     <string name="ali_zhi_title">捐赠·支付宝</string>

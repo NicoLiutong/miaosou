@@ -59,6 +59,12 @@ public class LoadImageAsync extends AsyncTask<String, Integer, Bitmap> {
             }
             is.close();
             baos.close();
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(baos.toByteArray(),0,baos.size(),options);
+            options.inSampleSize = 2;
+            options.inJustDecodeBounds = false;
             return BitmapFactory.decodeByteArray(baos.toByteArray(),0,baos.size());
         } catch (Exception e) {
             e.printStackTrace();

@@ -18,7 +18,7 @@
         android:textColor="@color/white"
         android:textSize="18sp"
         />
-
+    
     <com.scwang.smartrefresh.layout.SmartRefreshLayout
         android:id="@+id/smart_refresh_layout_picture"
         android:layout_below="@id/tv_bar_picture"

@@ -1,6 +1,8 @@
 package com.example.animation.fragments;
 
 import android.Manifest;
+import android.app.WallpaperManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +28,10 @@ import com.bm.library.PhotoView;
 import com.example.animation.R;
 import com.example.animation.Util.ACache;
 import com.example.animation.Util.LoadImageAsync;
+import com.example.animation.Util.SavePicture;
 import com.example.animation.view.RoundProgressBarWithNumber;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -45,7 +47,8 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     private static final String TYPE = "type";
     public static final String COMIC = "comic";
     public static final String PICTURE = "picture";
-    private LoadImageAsync loadImageAsync;
+    private InvisibleBar invisibleBar;
+    private LoadImageAsync loadImageAsync = null;
     private String imageUrl;
     private int currentPage;
     private String pictureId;
@@ -71,20 +74,32 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //Log.d("onCeate",currentPage+"-onCeate");
         imageUrl = getArguments().getString(IMAGEURL);
         currentPage = getArguments().getInt(CURRENTPAGE);
         pictureId = getArguments().getString(PICTUREID);
         //Log.d("pictureid",pictureId);
         type = getArguments().getString(TYPE);
-        mCache = ACache.get(getContext());
+        //mCache = ACache.get(getContext());
+        mCache = ACache.get(new File(getActivity().getCacheDir().getPath()+ File.separator+"picture"),1024*1024*100,100);
         pictureBitmap = null;
+        if(type == COMIC){
+            invisibleBar = (InvisibleBar) getActivity();
+        }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //Log.d("onCeatedView",currentPage+"-onCeatedView");
+
         View view = inflater.inflate(R.layout.comic_photo_view,container,false);
         comicPhotoView = (PhotoView) view.findViewById(R.id.pv_comic_read);
         llLoadingProgress = (LinearLayout) view.findViewById(R.id.ll_loading_progress);
@@ -98,12 +113,64 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //Log.d("onActivityCreated",currentPage+"-onActivityCreated");
+
         comicPhotoView.enable();
         btLoadingFailed.setOnClickListener(this);
-        if(type.equals(PICTURE)){
-            comicPhotoView.setOnLongClickListener(this);
-        }
+        comicPhotoView.setOnLongClickListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("onStart",currentPage+"-onStart");
+
         loadingImage();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //Log.d("onResume",currentPage+"-onResume");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //Log.d("onPause",currentPage+"-onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        //Log.d("onStop",currentPage+"-onStop");
+        if(loadImageAsync!=null){
+            loadImageAsync.cancel(true);
+        }
+        if(pictureBitmap != null)
+        pictureBitmap.recycle();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        //Log.d("onDestroyView",currentPage+"-onDestroyView");
+        if(loadImageAsync!=null){
+            loadImageAsync.cancel(true);
+        }
+        if(pictureBitmap != null)
+            pictureBitmap.recycle();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //Log.d("onDestroy",currentPage+"-onDestroy");
+        if(loadImageAsync!=null){
+            loadImageAsync.cancel(true);
+        }
+        if(pictureBitmap != null)
+            pictureBitmap.recycle();
     }
 
     private void loadingImage(){
@@ -166,12 +233,16 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     public boolean onLongClick(View v) {
         switch (v.getId()){
             case R.id.pv_comic_read:
+                //Log.d("1","1");
                 if(type == PICTURE){
                     final AlertDialog.Builder savePicutreBuilder = new AlertDialog.Builder(getContext(),R.style.MyDialog);
                     savePicutreBuilder.setCancelable(true);
-                    final String[] string = {"保存图片到本地"};
+                    final String[] string = {"保存图片到本地","设为壁纸"};
                     savePicutreBuilder.setItems(string, this);
                     savePicutreBuilder.show();
+                    return true;
+                }else {
+                    invisibleBar.setInvisibleBar();
                 }
         }
         return false;
@@ -183,24 +254,7 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)){
             filepath = Environment.getExternalStorageDirectory().toString() + File.separator + "miaosou" + File.separator + "picture" + File.separator;
-            File dirFile = new File(filepath);
-            if(!dirFile.exists()){
-                dirFile.mkdirs();
-            }
-            File file = new File(dirFile,pictureId + ".jpg");
-            try {
-                FileOutputStream outputStream = new FileOutputStream(file);
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-                flag = true;
-                outputStream.flush();
-                outputStream.close();
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }
-            catch (IOException e){
-                e.printStackTrace();
-            }
-
+            flag = SavePicture.savePicture(filepath,bitmap,pictureId,getActivity());
         }else {
             Toast.makeText(getActivity(),"请开启读写SD卡权限",Toast.LENGTH_SHORT).show();
         }
@@ -210,21 +264,33 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        boolean saveSuccess = false;
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            if(ContextCompat.checkSelfPermission(getActivity(), permissions[0]) != PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(getActivity(),permissions,0);
-            }else {
-                saveSuccess = savePicture(pictureBitmap);
-            }
-        }else {
-            saveSuccess = savePicture(pictureBitmap);
-        }
-        if(saveSuccess){
-        Toast.makeText(getActivity(),"图片已存储在 /miaosou/picture 文件夹下",Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(getActivity(),"图片保存失败，请检查SD卡读写权限是否开启",Toast.LENGTH_SHORT).show();
+        switch (which){
+            case 0:
+                boolean saveSuccess = false;
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                    if(ContextCompat.checkSelfPermission(getActivity(), permissions[0]) != PackageManager.PERMISSION_GRANTED){
+                        ActivityCompat.requestPermissions(getActivity(),permissions,0);
+                    }else {
+                        saveSuccess = savePicture(pictureBitmap);
+                    }
+                }else {
+                    saveSuccess = savePicture(pictureBitmap);
+                }
+                if(saveSuccess){
+                    Toast.makeText(getActivity(),"图片已存储在 /miaosou/picture 文件夹下",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getActivity(),"图片保存失败，请检查SD卡读写权限是否开启",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case 1:
+                WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
+                try {
+                        wallpaperManager.setBitmap(pictureBitmap);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
         }
     }
 
@@ -241,5 +307,9 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
                 }
                 return;
         }
+    }
+
+    public interface InvisibleBar{
+        void setInvisibleBar();
     }
 }

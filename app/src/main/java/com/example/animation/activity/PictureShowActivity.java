@@ -73,4 +73,9 @@ public class PictureShowActivity extends AppCompatActivity {
         }.start();
     }
 
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

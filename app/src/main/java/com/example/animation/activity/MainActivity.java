@@ -1,6 +1,7 @@
 package com.example.animation.activity;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
@@ -26,15 +29,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.animation.R;
 import com.example.animation.fragments.AnimationFragment;
 import com.example.animation.fragments.ComicFragment;
-import com.example.animation.R;
+import com.example.animation.pay.AliZhi;
 import com.example.animation.pay.Config;
 import com.example.animation.pay.MiniPayUtils;
 
@@ -52,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private DrawerLayout mDrawerLayout;
     private NavigationView nvMenu;
     private ImageView nvHeardImage;
+
+    private Handler mHandler;
+
+    private boolean isCloseApp = false;
 
     private FloatingActionButton floatingActionButton;
 
@@ -114,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         animationPageSet(animationFragment);  //初始化為animationFragment
 
         isInternetOk();  //判斷網絡是否打開
-
+        setPayAuthor();
         animationPageCardview.setOnClickListener(this);
 
         comicPageCardview.setOnClickListener(this);
@@ -125,6 +135,21 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
 
         floatingActionButton.setOnClickListener(this);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case 1:
+                        isCloseApp = false;
+                }
+            }
+        };
     }
 
     @Override
@@ -207,8 +232,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
 
     }
 
-    /* 
->>>>>>> 78d69cd103828115de3c40dcfad215950b4eacaa
+    /*
     添加圖片
     */
     private List<Integer> setImageUrl(){
@@ -358,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 break;
             case R.id.about_exit:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                finish();
+                closeApp();
                 break;
             case R.id.animation_picture:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -369,6 +393,18 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         return true;
     }
 
+    private void closeApp(){
+        if(isCloseApp){
+            finish();
+        }else {
+            isCloseApp = true;
+            Toast.makeText(this,"再次点击关闭喵搜",Toast.LENGTH_SHORT).show();
+            mHandler.sendEmptyMessageDelayed(1,3000);
+        }
+
+
+    }
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
@@ -376,10 +412,71 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }else {
-                finish();
+                closeApp();
                 return true;
             }
         }
         return false;
+    }
+
+    private void setPayAuthor(){
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences.Editor editor = preferences.edit();
+        String keyCode = preferences.getString("payKey","1.0.0");
+        if(!keyCode.equals("1.23.0")){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.MyDialog);
+            View view = LayoutInflater.from(this).inflate(R.layout.main_dialog,null,false);
+            Button paybt = (Button) view.findViewById(R.id.dialog_pay);
+            final Button weixinbt = (Button) view.findViewById(R.id.dialog_weixin);
+            Button qqbt = (Button) view.findViewById(R.id.dialog_qq);
+            Button sharebt = (Button) view.findViewById(R.id.dialog_share);
+            Button closebt = (Button) view.findViewById(R.id.dialog_close);
+            builder.setView(view);
+            builder.setCancelable(false);
+            final Dialog dialog = builder.show();
+            paybt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    editor.putString("payKey","1.23.0");
+                    editor.commit();
+                    AliZhi.startAlipayClient(MainActivity.this,"FKX01294KSKKFN2F9ESS47");
+                    dialog.dismiss();
+                }
+            });
+            weixinbt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this,WeiXinHao.class);
+                    intent.putExtra(WeiXinHao.TYPE,WeiXinHao.WEIXIN);
+                    MainActivity.this.startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+            qqbt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this,WeiXinHao.class);
+                    intent.putExtra(WeiXinHao.TYPE,WeiXinHao.QQQUN);
+                    MainActivity.this.startActivity(intent);
+                    dialog.dismiss();
+                }
+            });
+            sharebt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("text/plain");
+                    intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.share_app,"喵搜"));
+                    startActivity(Intent.createChooser(intent,getString(R.string.share)));
+                    dialog.dismiss();
+                }
+            });
+            closebt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+        }
     }
 }

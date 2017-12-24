@@ -37,6 +37,8 @@ public class AboutActivity extends AppCompatActivity {
         private Preference mVersion;
         private Preference mShare;
         private Preference mGithub;
+        private Preference mWeiXinHao;
+        private Preference mQQQun;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +47,8 @@ public class AboutActivity extends AppCompatActivity {
             mVersion = findPreference("version");
             mShare = findPreference("share");
             mGithub = findPreference("github");
-
+            mWeiXinHao = findPreference("weixingongzhonghao");
+            mQQQun = findPreference("qqqun");
             mVersion.setSummary("v " + BuildConfig.VERSION_NAME);
             setListener();
         }
@@ -53,6 +56,7 @@ public class AboutActivity extends AppCompatActivity {
         private void setListener(){
             mShare.setOnPreferenceClickListener(this);
             mGithub.setOnPreferenceClickListener(this);
+            mWeiXinHao.setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -63,6 +67,14 @@ public class AboutActivity extends AppCompatActivity {
             }else if(preference == mGithub){
                 openUrl(preference.getSummary().toString());
                 return true;
+            }else if (preference == mWeiXinHao){
+                Intent intent = new Intent(AboutFragment.this.getActivity(),WeiXinHao.class);
+                intent.putExtra(WeiXinHao.TYPE,WeiXinHao.WEIXIN);
+                AboutFragment.this.getActivity().startActivity(intent);
+            }else if (preference == mQQQun){
+                Intent intent = new Intent(AboutFragment.this.getActivity(),WeiXinHao.class);
+                intent.putExtra(WeiXinHao.TYPE,WeiXinHao.QQQUN);
+                AboutFragment.this.getActivity().startActivity(intent);
             }
             return false;
         }

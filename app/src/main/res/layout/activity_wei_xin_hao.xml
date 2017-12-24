@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_wei_xin_hao"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray"
+    tools:context="com.example.animation.activity.WeiXinHao">
+    <TextView
+        android:id="@+id/weixin_title"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:textSize="17sp"
+        android:paddingLeft="10dp"
+        android:background="@color/colorPrimary"/>
+    <ImageView
+        android:id="@+id/weixin_picture"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        />
+    <TextView
+        android:id="@+id/weixin_text"
+        android:layout_below="@id/weixin_picture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:textColor="@color/white"
+        android:gravity="center_horizontal"
+        android:textSize="14sp"/>
+
+</RelativeLayout>

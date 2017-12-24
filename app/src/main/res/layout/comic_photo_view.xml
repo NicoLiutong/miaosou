@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/black"
+            android:textColor="@color/colorAccent"
             android:layout_margin="5dp"
             />
         <com.example.animation.view.RoundProgressBarWithNumber
@@ -28,8 +28,9 @@
             android:progress="0"
             android:layout_margin="5dp"
             app:progress_text_visibility="visible"
-            app:progress_text_color="@color/pink"
-            app:progress_reached_color="@color/pink"
+            app:progress_text_color="@color/colorAccent"
+            app:progress_unreached_color="@color/white"
+            app:progress_reached_color="@color/colorAccent"
             />
     </LinearLayout>
     <LinearLayout

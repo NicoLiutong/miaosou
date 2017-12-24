@@ -18,6 +18,14 @@
             android:key="github"
             android:summary="@string/about_github"
             android:title="Github" />
+        <Preference
+            android:key="weixingongzhonghao"
+            android:summary="@string/weixin_hao"
+            android:title="公众号" />
+        <Preference
+            android:key="qqqun"
+            android:summary="@string/qq_qun"
+            android:title="qq群" />
     </PreferenceCategory>
     <PreferenceCategory android:title="版权">
         <Preference
