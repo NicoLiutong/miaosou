@@ -40,45 +40,45 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:src="@drawable/ic_man"
                 android:layout_margin="3dp"/>
             <TextView
                 android:id="@+id/tv_news_man"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textColor="@color/gray"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:layout_margin="3dp"
                 />
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:src="@drawable/ic_time"
                 android:layout_margin="3dp"/>
             <TextView
                 android:id="@+id/tv_news_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textColor="@color/gray"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
                 android:layout_margin="3dp"
                 />
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:src="@drawable/ic_hot"
                 android:layout_margin="3dp"/>
             <TextView
                 android:id="@+id/tv_news_hot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textColor="@color/gray"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"

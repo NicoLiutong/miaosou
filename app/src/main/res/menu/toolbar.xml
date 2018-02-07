@@ -12,6 +12,11 @@
         android:title="@string/animation_picture"
         app:showAsAction="always"/>
     <item
+        android:id="@+id/cosplay_picture"
+        android:icon="@drawable/ic_cosplay"
+        android:title="@string/cosplay_picture"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/my_signin"
         android:icon="@drawable/ic_signin"
         android:title="签到"
@@ -26,6 +31,11 @@
         android:id="@+id/pay_author"
         android:icon="@drawable/ic_menu_pay"
         android:title="@string/pay_author"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/chatting"
+        android:icon="@drawable/ic_chatting"
+        android:title="@string/chatting"
         app:showAsAction="always"/>
     <item
         android:id="@+id/about_author"

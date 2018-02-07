@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_change_user_picture"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/crop_title"
+        layout="@layout/basic_title"/>
+    <Button
+        android:id="@+id/crop_picture_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="完成"
+        android:layout_margin="3dp"
+        android:textColor="@color/colorAccent"
+        android:gravity="center"
+        android:background="@null"
+        />
+    <com.oginotihiro.cropview.CropView
+        android:id="@+id/crop_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/crop_title"/>
+
+</RelativeLayout>

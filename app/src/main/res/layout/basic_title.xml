@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/basic_title_layout"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="?attr/actionBarSize"
+              android:background="@color/login_back">
+    <TextView
+        android:id="@+id/basic_texttitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+</LinearLayout>

@@ -8,10 +8,17 @@
     <string name="about_github">https://github.com/NicoLiutong</string>
     <string name="about_author">about</string>
     <string name="share">share</string>
+    <string name="chatting">chatting</string>
     <string name="about_exit">exit</string>
     <string name="animation_news">news</string>
     <string name="animation_picture">pictures</string>
+    <string name="cosplay_picture">pictures</string>
     <string name="pay_author">donate author</string>
+
+    <string name="border_top">Border Top</string>
+    <string name="border_bottom">Border Bottom</string>
+    <string name="image_id">Image Id</string>
+    <string name="image_url">Image Url</string>
 
     <string name="weixin_hao">WeiXin</string>
     <string name="qq_qun">qq</string>
@@ -19,4 +26,22 @@
     <string name="wei_zhi_tip">WeiXin scan, or click \ "go donate \", in the upper right corner of WeChat page \ "select the qr code \" from the album.</string>
     <string name="ali_zhi_title">donate·ZhiFuBao</string>
     <string name="ali_zhi_tip">ZhiFuBao scan, or click \ "to donate \"\nit is our greatest motivation</string>
+
+    <string name="user_name">email</string>
+    <string name="password">password</string>
+    <string name="register">if you were not register,please pink </string>
+    <string name="login">login</string>
+    <string name="forget_password">forget password？</string>
+    <string name="register_email">email：</string>
+    <string name="forget_email">please input email</string>
+    <string name="forget_password_button">send verified message</string>
+    <string name="register_username">UserName：</string>
+    <string name="register_edit_username">please input username</string>
+    <string name="register_edit_email">please input email</string>
+    <string name="register_password">password：</string>
+    <string name="register_edit_password">please input string length 4-16</string>
+    <string name="register_confirm_password">confirm password：</string>
+    <string name="register_edit_confirm_password">please input passord again</string>
+    <string name="register_register">register</string>
+
 </resources>

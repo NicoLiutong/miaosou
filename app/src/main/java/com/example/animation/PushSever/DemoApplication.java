@@ -5,6 +5,10 @@ import android.content.Context;
 import android.os.Process;
 
 import com.xiaomi.mipush.sdk.MiPushClient;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
+import com.xiaomi.mistatistic.sdk.URLStatsRecorder;
+import com.xiaomi.mistatistic.sdk.controller.HttpEventFilter;
+import com.xiaomi.mistatistic.sdk.data.HttpEvent;
 
 import org.litepal.LitePalApplication;
 
@@ -34,12 +38,36 @@ public class DemoApplication extends LitePalApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+        // regular stats.
+        MiStatInterface.initialize(this,"2882303761517607255","5351760768255", "kuan");
 
         // 注册push服务，注册成功后会向DemoMessageReceiver发送广播
         // 可以从DemoMessageReceiver的onCommandResult方法中MiPushCommandMessage对象参数中获取注册信息
         if (shouldInit()) {
             MiPushClient.registerPush(this, APP_ID, APP_KEY);
         }
+
+        //MiStatInterface.setUploadPolicy(MiStatInterface.UPLOAD_POLICY_WHILE_INITIALIZE, 0);
+        MiStatInterface.setUploadPolicy(MiStatInterface.UPLOAD_POLICY_WHILE_INITIALIZE,0);
+        MiStatInterface.triggerUploadManually();
+        MiStatInterface.enableLog();
+
+        // enable exception catcher.
+        MiStatInterface.enableExceptionCatcher(true);
+        // enable network monitor
+        URLStatsRecorder.enableAutoRecord();
+
+        URLStatsRecorder.setEventFilter(new HttpEventFilter() {
+
+            @Override
+            public HttpEvent onEvent(HttpEvent event) {
+                // returns null if you want to drop this event.
+                // you can modify it here too.
+                return event;
+            }
+        });
+
+        //Log.d("MI_STAT", MiStatInterface.getDeviceID(this) + " is the device.");
         /*if (sHandler == null) {
             sHandler = new DemoHandler(getApplicationContext());
         }*/
@@ -58,31 +86,5 @@ public class DemoApplication extends LitePalApplication {
         return false;
     }
 
-    /*public static DemoHandler getHandler() {
-        return sHandler;
-    }*/
 
-    /*public static void setMainActivity(MainActivity activity) {
-        sMainActivity = activity;
-    }*/
-
-    /*public static class DemoHandler extends Handler {
-
-        private Context context;
-
-        public DemoHandler(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            String s = (String) msg.obj;
-            if (sMainActivity != null) {
-                sMainActivity.refreshLogInfo();
-            }
-            if (!TextUtils.isEmpty(s)) {
-                Toast.makeText(context, s, Toast.LENGTH_LONG).show();
-            }
-        }
-    }*/
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ public class ZhiActivity extends AppCompatActivity implements View.OnClickListen
     private int mZhiWay;
     private ViewGroup mQaView, mZhiBg;
     private ImageView mQaImage;
+    private Button mZhiChange;
 
     /*******config***********/
     private String wechatTip, aliTip;
@@ -44,6 +46,7 @@ public class ZhiActivity extends AppCompatActivity implements View.OnClickListen
         mQaView = (ViewGroup) findViewById(R.id.qa_layout);
         mZhiBg = (ViewGroup) findViewById(R.id.zhi_bg);
         mQaImage = (ImageView) findViewById(R.id.qa_image_view);
+        mZhiChange = (Button) findViewById(R.id.zhi_change);
         mZhiBg.setOnClickListener(this);
     }
 
@@ -64,6 +67,7 @@ public class ZhiActivity extends AppCompatActivity implements View.OnClickListen
             mZhiBg.setBackgroundResource(R.color.common_blue);
             mTitleTv.setText(R.string.ali_zhi_title);
             mSummeryTv.setText(aliTip);
+            mZhiChange.setText("去微信");
             mQaImage.setImageResource(aliQaImage);
 
             /*mZhiBg.setBackgroundResource(R.drawable.common_bg);
@@ -89,16 +93,18 @@ public class ZhiActivity extends AppCompatActivity implements View.OnClickListen
             } else {
                 AliZhi.startAlipayClient(this, aliZhiKey);
             }
-        } else if (v == mZhiBg) {
+        } else if (v == mZhiChange) {
             if (mZhiWay != ZHI_WAY_WECHAT) {
                 mZhiBg.setBackgroundResource(R.color.common_blue);
                 mTitleTv.setText(R.string.ali_zhi_title);
                 mSummeryTv.setText(aliTip);
+                mZhiChange.setText("去微信");
                 mQaImage.setImageResource(aliQaImage);
             } else {
                 mZhiBg.setBackgroundResource(R.drawable.common_bg);
                 mTitleTv.setText(R.string.wei_zhi_title);
                 mSummeryTv.setText(wechatTip);
+                mZhiChange.setText("去支付宝");
                 mQaImage.setImageResource(wechatQaImage);
             }
             mZhiWay = ++mZhiWay % 2;

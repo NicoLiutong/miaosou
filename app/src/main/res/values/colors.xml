@@ -19,4 +19,7 @@
     <color name="yellow_dark">#FFA000</color>
     <color name="common_dark">#424242</color>
     <color name="common_dark_grey_60">#99616161</color>
+    <color name="login_back">#4f000000</color>
+    <color name="edit_line">#ffffff</color>
+    <color name="affirm_color">#0a000000</color>
 </resources>

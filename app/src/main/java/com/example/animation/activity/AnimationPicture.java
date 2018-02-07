@@ -2,110 +2,143 @@ package com.example.animation.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.animation.R;
-import com.example.animation.adapter.PictureAdapter;
-import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
+import com.example.animation.adapter.PictureListShow;
+import com.example.animation.fragments.PictureListFragment;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnimationPicture extends AppCompatActivity implements PictureAdapter.OnClickListener,OnRefreshLoadmoreListener{
+public class AnimationPicture extends AppCompatActivity implements ViewPager.OnPageChangeListener,View.OnClickListener{
 
-    private final List<List<String>> pictureList = new ArrayList<>();
-    private RecyclerView picturesRv;
-    private SmartRefreshLayout smartRefreshLayout;
-    private PictureAdapter pictureAdapter;
-    private static final String PictureListUrl = "https://yande.re/post?page=";
-    private int page = 1;
+    private ViewPager vpPictureShow;
+    private TextView tvYandere;
+    private TextView tvKonachan;
+    //private TextView tvLolibooru;
+    private TextView tvAnimation;
+    private Button pictureSearch;
+    private PictureListShow pictureListShowAdapter;
+    private PictureListFragment yandereFragment;
+    private PictureListFragment konachanFragment;
+    //private PictureListFragment lolibooruFragment;
+    private PictureListFragment animationFragment;
+    private List<Fragment> pictureFragmentLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animation_picture);
-        picturesRv = (RecyclerView) findViewById(R.id.rv_picture);
-        smartRefreshLayout = (SmartRefreshLayout) findViewById(R.id.smart_refresh_layout_picture);
-        smartRefreshLayout.setOnRefreshLoadmoreListener(this);
-        LayoutManager layoutManager = new GridLayoutManager(this,3);
-        picturesRv.setLayoutManager(layoutManager);
-        pictureAdapter = new PictureAdapter(pictureList,this);
-        picturesRv.setAdapter(pictureAdapter);
-        if(!pictureList.isEmpty()){
-            smartRefreshLayout.finishLoadmore();
-            smartRefreshLayout.finishRefresh();
-            pictureAdapter.notifyDataSetChanged();
-        }else {
-        smartRefreshLayout.autoRefresh();
+        tvYandere = (TextView) findViewById(R.id.picture_yandere);
+        tvYandere.setSelected(true);
+        tvYandere.setOnClickListener(this);
+        tvKonachan = (TextView) findViewById(R.id.picture_konachan);
+        tvKonachan.setOnClickListener(this);
+        pictureSearch = (Button) findViewById(R.id.picture_search);
+        pictureSearch.setOnClickListener(this);
+        //tvLolibooru = (TextView) findViewById(R.id.picture_lolibooru);
+        //tvLolibooru.setOnClickListener(this);
+        tvAnimation = (TextView) findViewById(R.id.picture_animation);
+        tvAnimation.setOnClickListener(this);
+
+        vpPictureShow = (ViewPager) findViewById(R.id.picture_show_vp);
+        pictureFragmentLists = new ArrayList<>();
+        yandereFragment = PictureListFragment.pictureInstance(PictureListFragment.YANDERE,"");
+        konachanFragment = PictureListFragment.pictureInstance(PictureListFragment.KONACHAN,"");
+        //lolibooruFragment = PictureListFragment.pictureInstance(PictureListFragment.LOLIBOORU);
+        animationFragment = PictureListFragment.pictureInstance(PictureListFragment.ANIMATION,"");
+
+        pictureFragmentLists.add(yandereFragment);
+        pictureFragmentLists.add(konachanFragment);
+        //pictureFragmentLists.add(lolibooruFragment);
+        pictureFragmentLists.add(animationFragment);
+        pictureListShowAdapter = new PictureListShow(getSupportFragmentManager(),pictureFragmentLists);
+        vpPictureShow.setAdapter(pictureListShowAdapter);
+        vpPictureShow.addOnPageChangeListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this, "二次元图片");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        switch (position){
+            case 0:
+                tvYandere.setSelected(true);
+                tvKonachan.setSelected(false);
+                //tvLolibooru.setSelected(false);
+                tvAnimation.setSelected(false);
+                break;
+            case 1:
+                tvYandere.setSelected(false);
+                tvKonachan.setSelected(true);
+                //tvLolibooru.setSelected(false);
+                tvAnimation.setSelected(false);
+                break;
+            case 2:
+                tvYandere.setSelected(false);
+                tvKonachan.setSelected(false);
+                //tvLolibooru.setSelected(true);
+                tvAnimation.setSelected(true);
+                break;
         }
     }
 
-    private void queryPictureUrl(final String pictureUrl){
-        new Thread(){
-            @Override
-            public void run() {
-                super.run();
-                try {
-                    Document pictureDocument = Jsoup.connect(pictureUrl).timeout(3000).get();
-                    Elements pictureLists = pictureDocument.select("a.thumb");
-                    for (Element picture:pictureLists){
-                        String pictureUrl = "https://yande.re" + picture.select("a").get(0).attr("href");
-                        String imageUrl = picture.select("img").get(0).attr("src");
-                        List<String> imageList = new ArrayList<String>();
-                        imageList.add(pictureUrl);
-                        imageList.add(imageUrl);
-                        //Log.d("pictureUrl",pictureUrl);
-                        //Log.d("imageUrl",imageUrl);
-                        pictureList.add(imageList);
-                    }
-                }catch (IOException e){
-                    e.printStackTrace();
-                    page = page - 1;
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if(pictureList.isEmpty()){
-                            Toast.makeText(AnimationPicture.this,"服务器挂掉了，请稍后再试",Toast.LENGTH_SHORT).show();
-                        }
-                        smartRefreshLayout.finishLoadmore();
-                        smartRefreshLayout.finishRefresh();
-                        pictureAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-        }.start();
-    }
     @Override
-    public void onClick(View v,int positio) {
-        Intent intent = new Intent(this,PictureShowActivity.class);
-        intent.putExtra(PictureShowActivity.PICTUREURL,pictureList.get(positio).get(0));
-        this.startActivity(intent);
+    public void onPageScrollStateChanged(int state) {
+
     }
 
     @Override
-    public void onLoadmore(RefreshLayout refreshlayout) {
-        page = page + 1;
-        queryPictureUrl(PictureListUrl + page);
-    }
-
-    @Override
-    public void onRefresh(RefreshLayout refreshlayout) {
-        page = 1;
-        pictureList.clear();
-        queryPictureUrl(PictureListUrl + page);
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.picture_yandere:
+                tvYandere.setSelected(true);
+                tvKonachan.setSelected(false);
+                //tvLolibooru.setSelected(false);
+                tvAnimation.setSelected(false);
+                vpPictureShow.setCurrentItem(0);
+                break;
+            case R.id.picture_konachan:
+                tvYandere.setSelected(false);
+                tvKonachan.setSelected(true);
+                //tvLolibooru.setSelected(false);
+                tvAnimation.setSelected(false);
+                vpPictureShow.setCurrentItem(1);
+                break;
+            case R.id.picture_animation:
+                tvYandere.setSelected(false);
+                tvKonachan.setSelected(false);
+                //tvLolibooru.setSelected(true);
+                tvAnimation.setSelected(true);
+                vpPictureShow.setCurrentItem(2);
+                break;
+            case R.id.picture_search:
+                Intent intent = new Intent(AnimationPicture.this,SearchActivity.class);
+                intent.putExtra("type",3);
+                startActivity(intent);
+                break;
+        }
     }
 }

@@ -34,19 +34,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.animation.R;
+import com.example.animation.Util.SHA;
+import com.example.animation.customSystem.bease.User;
+import com.example.animation.customSystem.view.UserMessageActivity;
 import com.example.animation.fragments.AnimationFragment;
 import com.example.animation.fragments.ComicFragment;
 import com.example.animation.pay.AliZhi;
 import com.example.animation.pay.Config;
 import com.example.animation.pay.MiniPayUtils;
+import com.example.animation.server.UpdateMyFavority;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import cn.bmob.v3.BmobUser;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener,
         SwipeRefreshLayout.OnRefreshListener,View.OnClickListener,NavigationView.OnNavigationItemSelectedListener{
@@ -58,7 +69,8 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private DrawerLayout mDrawerLayout;
     private NavigationView nvMenu;
     private ImageView nvHeardImage;
-
+    private CircleImageView nvHeadUserPicture;
+    private TextView nvHeadUserName;
     private Handler mHandler;
 
     private boolean isCloseApp = false;
@@ -88,8 +100,10 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private AnimationFragment animationFragment;
     private ComicFragment comicFragment;
 
-    private List<Integer> imageUrl;
+    private List<String> imageUrl;
     private float scrollY = 0;
+
+    private Intent service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +111,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         setContentView(R.layout.activity_main);
         //DemoApplication.setMainActivity(this);
 
-        imageUrl = setImageUrl();  //獲取圖片url
+        service = new Intent(this, UpdateMyFavority.class);
+        this.startService(service);
+
+        try {
+            imageUrl = setImageUrl();  //獲取圖片url
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.main_collapsingToolbar);
         collapsingToolbar.setExpandedTitleColor(ContextCompat.getColor(MainActivity.this,R.color.colorAccent));  //設置toolbar背景色
@@ -106,6 +127,8 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mDrawerLayout = (DrawerLayout) findViewById(R.id.dl_menu);
         nvMenu = (NavigationView) findViewById(R.id.nv_menu);
         nvHeardImage = (ImageView) nvMenu.getHeaderView(0).findViewById(R.id.nv_heard_image);
+        nvHeadUserPicture = (CircleImageView) nvMenu.getHeaderView(0).findViewById(R.id.nv_head_user_picture);
+        nvHeadUserName = (TextView) nvMenu.getHeaderView(0).findViewById(R.id.nv_head_user_name);
         nvMenu.setNavigationItemSelectedListener(this);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
@@ -116,15 +139,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         mainactivityToolbarImageview = (ImageView) findViewById(R.id.animation_toobarImage);
         setToolbarImage();  //設置ToolBarImage
         setAnimationTitle();  //設置Title
-        setNvHeardImage();   //设置NavigationView的heard图片
         setToolBarNavigation();
-
+        setPayAuthor();
         animationFragment = new AnimationFragment();  //設置AnimationFragment
         comicFragment = new ComicFragment();  //設置comicFragment
         animationPageSet(animationFragment);  //初始化為animationFragment
 
         isInternetOk();  //判斷網絡是否打開
-        setPayAuthor();
+        nvHeadUserPicture.setOnClickListener(this);
         animationPageCardview.setOnClickListener(this);
 
         comicPageCardview.setOnClickListener(this);
@@ -140,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     @Override
     protected void onStart() {
         super.onStart();
+        setNvHeardImage();   //设置NavigationView的heard图片
         mHandler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
@@ -153,9 +176,19 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        this.stopService(service);
     }
 
     private void setAnimationTitle(){   //設置title，獲取datename，如果有則將其設置為title；否則設置默認的
@@ -235,52 +268,12 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     /*
     添加圖片
     */
-    private List<Integer> setImageUrl(){
-        List<Integer> imageUrls = new ArrayList<>();
-        imageUrls.add(R.drawable.img001);
-        imageUrls.add(R.drawable.img002);
-        imageUrls.add(R.drawable.img003);
-        imageUrls.add(R.drawable.img004);
-        imageUrls.add(R.drawable.img005);
-        imageUrls.add(R.drawable.img006);
-        imageUrls.add(R.drawable.img007);
-        imageUrls.add(R.drawable.img008);
-        imageUrls.add(R.drawable.img009);
-        imageUrls.add(R.drawable.img010);
-        imageUrls.add(R.drawable.img011);
-        imageUrls.add(R.drawable.img012);
-        imageUrls.add(R.drawable.img013);
-        imageUrls.add(R.drawable.img014);
-        imageUrls.add(R.drawable.img015);
-        imageUrls.add(R.drawable.img016);
-        imageUrls.add(R.drawable.img017);
-        imageUrls.add(R.drawable.img018);
-        imageUrls.add(R.drawable.img019);
-        imageUrls.add(R.drawable.img020);
-        imageUrls.add(R.drawable.img021);
-        imageUrls.add(R.drawable.img022);
-        imageUrls.add(R.drawable.img023);
-        imageUrls.add(R.drawable.img024);
-        imageUrls.add(R.drawable.img025);
-        imageUrls.add(R.drawable.img026);
-        imageUrls.add(R.drawable.img027);
-        imageUrls.add(R.drawable.img028);
-        imageUrls.add(R.drawable.img029);
-        imageUrls.add(R.drawable.img030);
-        imageUrls.add(R.drawable.img031);
-        imageUrls.add(R.drawable.img032);
-        imageUrls.add(R.drawable.img033);
-        imageUrls.add(R.drawable.img034);
-        imageUrls.add(R.drawable.img035);
-        imageUrls.add(R.drawable.img036);
-        imageUrls.add(R.drawable.img037);
-        imageUrls.add(R.drawable.img038);
-        imageUrls.add(R.drawable.img039);
-        imageUrls.add(R.drawable.img040);
-        imageUrls.add(R.drawable.img041);
-        imageUrls.add(R.drawable.img042);
-        imageUrls.add(R.drawable.img043);
-        imageUrls.add(R.drawable.img044);
+    private List<String> setImageUrl() throws IOException {
+        List<String> imageUrls = new ArrayList<>();
+        String[] imageUrl =  getAssets().list("picture");
+        for (int i = 0;i < imageUrl.length;i ++){
+            imageUrls.add("file:///android_asset/picture/" + imageUrl[i]);
+        }
         return imageUrls;
     }
 
@@ -308,6 +301,14 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
     private void setNvHeardImage(){
         Random random = new Random();
         int number = random.nextInt(imageUrl.size() - 1);
+        User currentUser = BmobUser.getCurrentUser(User.class);
+        if(currentUser!=null){
+            Glide.with(MainActivity.this).load(currentUser.getUesrImage()).into(nvHeadUserPicture);
+            nvHeadUserName.setText(currentUser.getName());
+        }else {
+            Glide.with(MainActivity.this).load(R.drawable.user_picture).into(nvHeadUserPicture);
+            nvHeadUserName.setText("未登录");
+        }
         Glide.with(MainActivity.this).load(imageUrl.get(number)).into(nvHeardImage);
     }
     @Override
@@ -347,7 +348,12 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 break;
             case R.id.animation_search:
                 Intent intent = new Intent(MainActivity.this,SearchActivity.class);
+                intent.putExtra("type",0);
                 MainActivity.this.startActivity(intent);
+                break;
+            case R.id.nv_head_user_picture:
+                Intent userMessage = new Intent(MainActivity.this, UserMessageActivity.class);
+                this.startActivity(userMessage);
                 break;
         }
     }
@@ -382,12 +388,23 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
                 break;
             case R.id.about_exit:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
-                closeApp();
+                finish();
                 break;
             case R.id.animation_picture:
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 intent = new Intent(this,AnimationPicture.class);
                 this.startActivity(intent);
+                break;
+            case R.id.cosplay_picture:
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                intent = new Intent(this,CosplayPicture.class);
+                this.startActivity(intent);
+                break;
+            case R.id.chatting:
+                mDrawerLayout.closeDrawer(GravityCompat.START);
+                //intent = new Intent(this,BugReportActivity.class);
+                //this.startActivity(intent);
+                openChatting();
                 break;
         }
         return true;
@@ -423,7 +440,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         final SharedPreferences.Editor editor = preferences.edit();
         String keyCode = preferences.getString("payKey","1.0.0");
-        if(!keyCode.equals("1.23.0")){
+        if(!keyCode.equals("1.27.0")){
             AlertDialog.Builder builder = new AlertDialog.Builder(this,R.style.MyDialog);
             View view = LayoutInflater.from(this).inflate(R.layout.main_dialog,null,false);
             Button paybt = (Button) view.findViewById(R.id.dialog_pay);
@@ -437,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             paybt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    editor.putString("payKey","1.23.0");
+                    editor.putString("payKey","1.27.0");
                     editor.commit();
                     AliZhi.startAlipayClient(MainActivity.this,"FKX01294KSKKFN2F9ESS47");
                     dialog.dismiss();
@@ -446,6 +463,8 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             weixinbt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    editor.putString("payKey","1.27.0");
+                    editor.commit();
                     Intent intent = new Intent(MainActivity.this,WeiXinHao.class);
                     intent.putExtra(WeiXinHao.TYPE,WeiXinHao.WEIXIN);
                     MainActivity.this.startActivity(intent);
@@ -455,6 +474,8 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             qqbt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    editor.putString("payKey","1.27.0");
+                    editor.commit();
                     Intent intent = new Intent(MainActivity.this,WeiXinHao.class);
                     intent.putExtra(WeiXinHao.TYPE,WeiXinHao.QQQUN);
                     MainActivity.this.startActivity(intent);
@@ -464,6 +485,8 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             sharebt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    editor.putString("payKey","1.27.0");
+                    editor.commit();
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.setType("text/plain");
                     intent.putExtra(Intent.EXTRA_TEXT,getString(R.string.share_app,"喵搜"));
@@ -474,9 +497,34 @@ public class MainActivity extends AppCompatActivity implements AppBarLayout.OnOf
             closebt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    editor.putString("payKey","1.27.0");
+                    editor.commit();
                     dialog.dismiss();
                 }
             });
         }
+    }
+
+    private void openChatting() {
+        User user = BmobUser.getCurrentUser(User.class);
+        long timestamp = System.currentTimeMillis()/1000;
+        String userName = "";
+        String imageUrl = user.getUesrImage();
+        try {
+            userName = URLEncoder.encode(user.getName(),"UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String xlm = "12483_"+user.getObjectId()+"_"+timestamp+"_jWr4HgC3hIFhgWTudvoclclZYwjBvwK4";
+        String xlmHash = SHA.shaEncrypt(xlm);
+        String url = "https://xianliao.me/website/12483?mobile=1&uid="+user.getObjectId()+"&username="+userName+"&avatar="+imageUrl+"&ts="+timestamp+"&token="+xlmHash;
+        Intent intent = new Intent(this,BasicWebActivity.class);
+        intent.putExtra(AnimationFragment.ANIMATION_URL,url);
+        this.startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

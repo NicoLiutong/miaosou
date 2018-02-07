@@ -19,7 +19,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">42dp</item>
         <item name="android:gravity">center</item>
-        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_margin">5dp</item>
         <item name="android:textSize">14dp</item>
         <item name="android:background">@drawable/roundbtn_tran</item>
         <item name="android:layout_gravity">center</item>
@@ -29,4 +29,65 @@
     <style name="MyDialog" parent="android:Theme.Holo.Light.Dialog">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="LoginTextView">
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="MyEditText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+    </style>
+
+    <style name="RegisterLinearLayout">
+        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_marginTop">15dp</item>
+        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="RegisterText">
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize" >15sp</item>
+        <item name="android:gravity">center_vertical|right</item>
+    </style>
+
+    <style name="RegisterEdit">
+        <item name="android:textSize">15sp</item>
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="userMessageText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_margin">10dp</item>
+    </style>
+
+    <style name="userMessageLine">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:background">@color/gray</item>
+    </style>
+
 </resources>

@@ -24,6 +24,7 @@ import com.example.animation.R;
 import com.just.library.AgentWeb;
 import com.just.library.ChromeClientCallbackManager;
 import com.just.library.LogUtils;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 public class BasicWebActivity extends AppCompatActivity {
 
@@ -96,6 +97,8 @@ public class BasicWebActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) { //設置菜單欄
         getMenuInflater().inflate(R.menu.go_to_network,menu);
@@ -122,11 +125,13 @@ public class BasicWebActivity extends AppCompatActivity {
                 view.loadUrl(url);
                 urlNow  = url;
                 return false;
-            }
-
+            }else if(url.startsWith("magnet")){
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             BasicWebActivity.this.startActivity(intent);
             return true;
+            }else {
+                return false;
+            }
         }
 
         @Override
@@ -195,6 +200,7 @@ public class BasicWebActivity extends AppCompatActivity {
     protected void onPause() {
         mAgentWeb.getWebLifeCycle().onPause();
         super.onPause();
+        MiStatInterface.recordPageEnd();
 
     }
 
@@ -202,6 +208,7 @@ public class BasicWebActivity extends AppCompatActivity {
     protected void onResume() {
         mAgentWeb.getWebLifeCycle().onResume();
         super.onResume();
+        MiStatInterface.recordPageStart(this, "网络界面");
     }
 
     @Override

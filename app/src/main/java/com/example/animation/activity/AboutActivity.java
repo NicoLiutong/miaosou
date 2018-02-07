@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.animation.BuildConfig;
 import com.example.animation.R;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 /**
  * Created by 刘通 on 2017/10/15.
@@ -53,10 +54,23 @@ public class AboutActivity extends AppCompatActivity {
             setListener();
         }
 
+        @Override
+        public void onResume() {
+            super.onResume();
+            MiStatInterface.recordPageStart(getActivity(),"关于");
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            MiStatInterface.recordPageEnd();
+        }
+
         private void setListener(){
             mShare.setOnPreferenceClickListener(this);
             mGithub.setOnPreferenceClickListener(this);
             mWeiXinHao.setOnPreferenceClickListener(this);
+            mQQQun.setOnPreferenceClickListener(this);
         }
 
         @Override
@@ -71,10 +85,12 @@ public class AboutActivity extends AppCompatActivity {
                 Intent intent = new Intent(AboutFragment.this.getActivity(),WeiXinHao.class);
                 intent.putExtra(WeiXinHao.TYPE,WeiXinHao.WEIXIN);
                 AboutFragment.this.getActivity().startActivity(intent);
+                return true;
             }else if (preference == mQQQun){
                 Intent intent = new Intent(AboutFragment.this.getActivity(),WeiXinHao.class);
                 intent.putExtra(WeiXinHao.TYPE,WeiXinHao.QQQUN);
                 AboutFragment.this.getActivity().startActivity(intent);
+                return true;
             }
             return false;
         }

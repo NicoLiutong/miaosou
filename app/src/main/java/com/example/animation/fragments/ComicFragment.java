@@ -17,6 +17,7 @@ import com.example.animation.adapter.ComicAdapter;
 import com.example.animation.db.ComicItem;
 import com.example.animation.R;
 import com.example.animation.view.BounceBallView;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -154,6 +155,18 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
         super.onCreate(savedInstanceState);
         SQLiteDatabase db = Connector.getDatabase();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(getActivity(), "漫画列表");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     //刷新列表，用於主界面的下拉刷新，先刪除所有comicType的數據，然後刷新數據

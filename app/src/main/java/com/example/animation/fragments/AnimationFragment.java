@@ -15,11 +15,12 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.animation.R;
 import com.example.animation.adapter.AnimationAdapter;
 import com.example.animation.adapter.DividerItemDecoration;
 import com.example.animation.db.AnimationItem;
-import com.example.animation.R;
 import com.example.animation.view.BounceBallView;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -129,6 +130,18 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
 
         //獲取數據進行顯示
         handAnimation();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(getActivity(), "动画列表");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     private int getCalendarWeek(){
@@ -250,7 +263,7 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
                     if(document.select("title").get(0).text().equals("这里什么都木有喔！- 喵阅ouo.us")){
 
                     }else {
-                        DataSupport.deleteAll(AnimationItem.class);
+
                         String date = document.select("option").get(0).text();
 
                         //Log.d("option",date);
@@ -263,12 +276,19 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
                         editor.apply();
 
                         //Log.d("setoption",pref.getString("datename",""));
-
+                        DataSupport.deleteAll(AnimationItem.class);
                         Elements animationlists = document.getElementsByTag("tbody");
                         for (Element animationlist : animationlists) {
                             String week = "week" + i;
                             i++;
                             Elements animations = animationlist.select("tr");
+                            if(animations.get(0).text().equals("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,")){
+                                //Log.d("11111",animations.get(0).text());
+                                AnimationItem animationItem = new AnimationItem();
+                                animationItem.setWeek(week);
+                                animationItem.setAnimationItem("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,");
+                                animationItem.save();
+                            }else {
                             for (Element animation : animations) {
                                 Element name = animation.select("a.name").first();
                                 Element type = animation.select("span").get(1);
@@ -292,7 +312,9 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
                                         //Log.d("url",String.valueOf(download.attr("href")));
                                     }
                                 }
+
                                 animationItem.save();
+                            }
                     }
 
                         }

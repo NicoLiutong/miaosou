@@ -1,40 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_animation_picture"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.animation.activity.AnimationPicture">
-    <TextView
-        android:id="@+id/tv_bar_picture"
-        android:layout_alignParentTop="true"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:background="@color/colorPrimary"
-        android:text="精美图片"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        />
-    
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        android:id="@+id/smart_refresh_layout_picture"
-        android:layout_below="@id/tv_bar_picture"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <com.scwang.smartrefresh.layout.header.ClassicsHeader
+        android:layout_height="wrap_content">
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_picture"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-        />
-        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            android:layout_height="?attr/actionBarSize"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:background="@color/colorPrimary"
+            android:text="二次元美图"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            />
+        <Button
+            android:id="@+id/picture_search"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/search"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"/>
+    </RelativeLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/picture_yandere"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="yandere"
+            android:layout_margin="7dp"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="@color/viewpager_color"/>
+        <TextView
+            android:id="@+id/picture_konachan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="konachan"
+            android:layout_margin="7dp"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="@color/viewpager_color"/>
+        <!--
+        <TextView
+            android:id="@+id/picture_lolibooru"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="lolibooru"
+            android:layout_margin="7dp"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="@color/viewpager_color"/>
+            -->
+        <TextView
+            android:id="@+id/picture_animation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="animatoin"
+            android:layout_margin="7dp"
+            android:gravity="center"
+            android:textSize="17sp"
+            android:textColor="@color/viewpager_color"/>
+    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/picture_show_vp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

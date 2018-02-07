@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.animation.R;
 import com.example.animation.adapter.NewsViewPagerAdapter;
 import com.example.animation.fragments.NewsFragment;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,18 @@ public class AnimationNewActivity extends AppCompatActivity implements ViewPager
         newsViewPagerAdapter = new NewsViewPagerAdapter(getSupportFragmentManager(),newsFragmentLists);
         vpNews.setAdapter(newsViewPagerAdapter);
         vpNews.addOnPageChangeListener(this);
-        vpNews.setOffscreenPageLimit(3);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this, "新闻界面");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     @Override

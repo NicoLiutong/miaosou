@@ -120,13 +120,13 @@ public class NewsFragment extends Fragment implements OnRefreshLoadmoreListener{
                 super.run();
                 try {
                     Document newsDocument = Jsoup.connect(newsUrl).timeout(3000).post();
-                    if(!newsDocument.select("div.pages").get(0).select("a").get(1).attr("href").equals("javascript:alert('已经是最后一页啦！')")){
+                    if (!newsDocument.select("div.pages").get(0).select("a").get(1).attr("href").equals("javascript:alert('已经是最后一页啦！')")) {
                         haveNext = true;
-                    }else {
+                    } else {
                         haveNext = false;
                     }
                     Elements newsListElements = newsDocument.select("div.list-item");
-                    for (Element newsElement:newsListElements){
+                    for (Element newsElement : newsListElements) {
                         String newsUrl = "https://ouo.us" + newsElement.select("a").get(0).attr("href");
                         String imageUrl = "https://ouo.us" + newsElement.select("img").get(0).attr("src");
                         String newsTitle = newsElement.select("h4").text();
@@ -149,18 +149,19 @@ public class NewsFragment extends Fragment implements OnRefreshLoadmoreListener{
                         news.setNewsPictureUrl(imageUrl);
                         newsList.add(news);
                     }
-                }catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        smartRefreshLayout.finishRefresh();
-                        smartRefreshLayout.finishLoadmore();
-                        newsAdapter.notifyDataSetChanged();
-                    }
-                })
-                ;
+                if (getActivity() != null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            smartRefreshLayout.finishRefresh();
+                            smartRefreshLayout.finishLoadmore();
+                            newsAdapter.notifyDataSetChanged();
+                        }
+                    });
+                }
             }
         }.start();
 

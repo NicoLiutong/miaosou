@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:id="@+id/nv_heard_image"
-           android:layout_width="match_parent"
-           android:scaleType="centerCrop"
-           android:layout_height="200dp">
-
-</ImageView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+    <ImageView
+    android:id="@+id/nv_heard_image"
+    android:layout_width="match_parent"
+    android:scaleType="centerCrop"
+    android:layout_height="match_parent"/>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/nv_head_user_picture"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"/>
+    <TextView
+        android:id="@+id/nv_head_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
+        android:textSize="20sp"
+        android:textColor="@color/colorAccent"
+        android:layout_toRightOf="@id/nv_head_user_picture"/>
+</RelativeLayout>

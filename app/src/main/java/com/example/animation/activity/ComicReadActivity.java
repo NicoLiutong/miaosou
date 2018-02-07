@@ -157,7 +157,6 @@ public class ComicReadActivity extends AppCompatActivity implements View.OnClick
         });
         pictureId = comicUrl.substring(comicUrl.lastIndexOf("/") + 1, comicUrl.lastIndexOf("."));
         for (int i = 0; i < comicImageUrl.size(); i++) {
-            //ComicReadFragment comicReadFragment = ComicReadFragment.newInstance(comicImageUrl.get(i), i + 1, pictureId + "-" + comicReadPage + "-" + (i + 1), ComicReadFragment.COMIC);
             ComicViewPager comicViewPager = new ComicViewPager();
             comicViewPager.setComicUrl(comicImageUrl.get(i));
             comicViewPager.setCurrentPage(i+1);

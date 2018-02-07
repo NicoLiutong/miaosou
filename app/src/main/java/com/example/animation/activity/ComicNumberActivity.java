@@ -15,11 +15,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.animation.adapter.ComicNumberAdapter;
 import com.example.animation.R;
+import com.example.animation.adapter.ComicNumberAdapter;
 import com.example.animation.db.ComicMessageItem;
 import com.example.animation.db.ComicNumberList;
 import com.example.animation.fragments.ComicFragment;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -99,6 +100,18 @@ public class ComicNumberActivity extends AppCompatActivity {
         comicMessageItem = getComicMessage(comicUrl);
         setButtonClick();
         queryComicNumber();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this, "漫画信息页");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     private void initialize(){
@@ -305,12 +318,14 @@ public class ComicNumberActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                ComicNumberActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateDisplay();
-                    }
-                });
+                if(this!=null) {
+                    ComicNumberActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateDisplay();
+                        }
+                    });
+                }
             }
         }.start();
     }

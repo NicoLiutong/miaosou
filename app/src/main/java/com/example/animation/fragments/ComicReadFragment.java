@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +46,7 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     private static final String TYPE = "type";
     public static final String COMIC = "comic";
     public static final String PICTURE = "picture";
+    //public static  final String ANIMATIONPIC = "animationPicture";
     private InvisibleBar invisibleBar;
     private LoadImageAsync loadImageAsync = null;
     private String imageUrl;
@@ -123,7 +123,7 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     @Override
     public void onStart() {
         super.onStart();
-        Log.d("onStart",currentPage+"-onStart");
+        //Log.d("onStart",currentPage+"-onStart");
 
         loadingImage();
     }
@@ -171,6 +171,9 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
         }
         if(pictureBitmap != null)
             pictureBitmap.recycle();
+
+        if(invisibleBar != null)
+            invisibleBar = null;
     }
 
     private void loadingImage(){

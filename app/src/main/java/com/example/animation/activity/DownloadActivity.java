@@ -12,12 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.animation.R;
 import com.example.animation.adapter.DividerItemDecoration;
 import com.example.animation.adapter.DownloadAdapter;
-import com.example.animation.R;
 import com.example.animation.db.DownloadItem;
 import com.example.animation.fragments.AnimationFragment;
 import com.example.animation.view.BounceBallView;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -101,6 +102,18 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         DataSupport.deleteAll(DownloadItem.class);
         //Log.d("url",animationUrl);
         queryDownload(animationUrl);        //查詢動漫列表
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this, "动画下载列表");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     //查詢數據，更新數據庫

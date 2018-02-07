@@ -7,10 +7,10 @@ import android.os.AsyncTask;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import cn.bmob.v3.okhttp3.Call;
+import cn.bmob.v3.okhttp3.OkHttpClient;
+import cn.bmob.v3.okhttp3.Request;
+import cn.bmob.v3.okhttp3.Response;
 
 /**
  * Created by 刘通 on 2017/11/7.
@@ -31,20 +31,20 @@ public class LoadImageAsync extends AsyncTask<String, Integer, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... params) {
-        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(params[0]).build();
         Call call = null;
-        Response response = null;
+        Response response;
         try {
+            OkHttpClient client = new OkHttpClient();
             call = client.newCall(request);
             response = call.execute();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            InputStream is = null;
-            int length = -1;
+            InputStream is;
+            int length;
             int progress = 0;
             is = response.body().byteStream();
             long count = response.body().contentLength();
-            byte[] bs = new byte[20];
+            byte[] bs = new byte[50];
             while ((length = is.read(bs)) != -1){
                 progress += length;
                 if(count == -1){
@@ -59,11 +59,14 @@ public class LoadImageAsync extends AsyncTask<String, Integer, Bitmap> {
             }
             is.close();
             baos.close();
-
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             BitmapFactory.decodeByteArray(baos.toByteArray(),0,baos.size(),options);
-            options.inSampleSize = 2;
+            if(params[0].substring(8,17).equals("cdn.anime")){
+                options.inSampleSize = 1;
+            }else {
+                options.inSampleSize = 2;
+            }
             options.inJustDecodeBounds = false;
             return BitmapFactory.decodeByteArray(baos.toByteArray(),0,baos.size());
         } catch (Exception e) {
