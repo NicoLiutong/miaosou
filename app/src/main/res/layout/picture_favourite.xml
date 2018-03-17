@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/picture_favourite_rv"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/picture_favourite_tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="主人还没有收藏喵！！"
+        android:textColor="@color/gray"
+        />
+</RelativeLayout>

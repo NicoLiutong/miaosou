@@ -16,6 +16,7 @@ import com.example.animation.activity.MainActivity;
 import com.example.animation.customSystem.bease.User;
 import com.example.animation.customSystem.presenter.LoginPresent;
 import com.example.animation.view.LineEditText;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
@@ -50,6 +51,18 @@ public class LoginActivity extends BaseActivity<LoginView,LoginPresent> implemen
         btLogin.setOnClickListener(this);
         tvRegister = (TextView) findViewById(R.id.login_register);
         tvRegister.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this,"登陆界面");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     @Override

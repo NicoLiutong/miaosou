@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.adapter.DividerItemDecoration;
 import com.example.animation.adapter.NewsAdapter;
@@ -45,6 +47,7 @@ public class NewsFragment extends Fragment implements OnRefreshLoadmoreListener{
     private boolean haveNext = true;
     private RecyclerView newsRecycler;
     private SmartRefreshLayout smartRefreshLayout;
+    private ImageView smartImageView;
     private NewsAdapter newsAdapter;
 
     private int type = 0;
@@ -73,6 +76,9 @@ public class NewsFragment extends Fragment implements OnRefreshLoadmoreListener{
         newsRecycler = (RecyclerView) view.findViewById(R.id.rv_news);
         smartRefreshLayout = (SmartRefreshLayout) view.findViewById(R.id.smart_refresh_layout_news);
         smartRefreshLayout.setOnRefreshLoadmoreListener(this);
+        smartRefreshLayout.setDisableContentWhenRefresh(true);
+        smartImageView = (ImageView) view.findViewById(R.id.smart_news_image_view);
+        Glide.with(getActivity()).load(R.drawable.loading_image).asGif().into(smartImageView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         newsRecycler.setLayoutManager(layoutManager);

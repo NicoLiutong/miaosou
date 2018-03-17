@@ -1,6 +1,7 @@
 package com.example.animation.customSystem.view;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,10 +20,12 @@ import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.customSystem.bease.User;
 import com.example.animation.customSystem.presenter.UserMessagePresent;
+import com.example.animation.db.AnimationItem;
 import com.example.animation.db.ComicMessageItem;
 import com.example.animation.view.LineEditText;
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.widget.WheelView;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.litepal.crud.DataSupport;
 
@@ -94,6 +97,18 @@ public class UserMessageActivity extends BaseActivity<UserMessageView,UserMessag
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this,"用户信息页");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
+    }
+
+    @Override
     public UserMessagePresent initPresenter() {
         return new UserMessagePresent();
     }
@@ -160,6 +175,9 @@ public class UserMessageActivity extends BaseActivity<UserMessageView,UserMessag
                 BmobUser.logOut();
                 Intent logout = new Intent(this,LoginActivity.class);
                 DataSupport.deleteAll(ComicMessageItem.class);
+                ContentValues values = new ContentValues();
+                values.put("isFavortiy",false);
+                DataSupport.updateAll(AnimationItem.class,values);
                 logout.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 this.startActivity(logout);
                 finish();

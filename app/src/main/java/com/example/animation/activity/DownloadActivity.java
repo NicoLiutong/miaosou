@@ -8,29 +8,33 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.adapter.DividerItemDecoration;
 import com.example.animation.adapter.DownloadAdapter;
 import com.example.animation.db.DownloadItem;
 import com.example.animation.fragments.AnimationFragment;
-import com.example.animation.view.BounceBallView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshLoadmoreListener;
 import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownloadActivity extends AppCompatActivity implements View.OnClickListener {
+import static org.litepal.LitePalApplication.getContext;
+
+public class DownloadActivity extends AppCompatActivity implements View.OnClickListener,OnRefreshLoadmoreListener {
 
     private RecyclerView downloadRecyclerView;
 
@@ -40,23 +44,16 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     private Button backButton;
 
-    private Button returnPageButton;
-
-    private Button nextPageButton;
-
-    private TextView pageText;
-
     private TextView downloadFailText;
+
+    private SmartRefreshLayout smartRefreshLayout;
+    private ImageView head;
 
     private AlertDialog.Builder alertDialogBuilder;
 
     private AlertDialog alertDialog;
 
-    private LinearLayout linearLayout;
-
     private List<DownloadItem> downloadItemList = new ArrayList<>();
-
-    private List<DownloadItem> charLists;
 
     private String animationName;
 
@@ -64,17 +61,12 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     private int page;
 
-    private int maxPage;
-
-    private boolean downloadFail = false;
-
-    private boolean isNextPages;
+    private boolean isNextPages = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
         page = 1;
-        maxPage = 0;
         Intent intent = getIntent();
         animationName = intent.getStringExtra(AnimationFragment.ANIMATION_NAME);        //獲取傳入的動漫名字
         animationUrl = intent.getStringExtra(AnimationFragment.ANIMATION_URL);      //獲取傳入的動漫url
@@ -83,25 +75,27 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         downloadRecyclerView = (RecyclerView) findViewById(R.id.download_list);
         downloadRecyclerView.setLayoutManager(layoutManager);
-        downloadAdapter = new DownloadAdapter(downloadItemList);
         downloadRecyclerView.addItemDecoration(new DividerItemDecoration(this));
+        downloadAdapter = new DownloadAdapter(downloadItemList);
         downloadRecyclerView.setAdapter(downloadAdapter);
-        
+        smartRefreshLayout = (SmartRefreshLayout) findViewById(R.id.animation_download_srl);
+        head = (ImageView) findViewById(R.id.animation_download_head);
+        Glide.with(this).load(R.drawable.loading_image).asGif().into(head);
+        smartRefreshLayout.setOnRefreshLoadmoreListener(this);
+        smartRefreshLayout.setEnableLoadmoreWhenContentNotFull(true);
+        smartRefreshLayout.setDisableContentWhenRefresh(true);
         animationTitle = (TextView) findViewById(R.id.download_title);      //動漫title
         backButton = (Button) findViewById(R.id.downliad_back);     //返回鍵
-        linearLayout = (LinearLayout) findViewById(R.id.button_layout);     
-        returnPageButton = (Button) findViewById(R.id.return_page);     //返回上一頁
-        nextPageButton = (Button) findViewById(R.id.next_page);     //下一頁
-        pageText = (TextView) findViewById(R.id.pages);     //頁碼顯示
         downloadFailText = (TextView) findViewById(R.id.download_fali);
-        pageText.setText(String.valueOf(page));
         animationTitle.setText(animationName);
         backButton.setOnClickListener(this);
-        returnPageButton.setOnClickListener(this);
-        nextPageButton.setOnClickListener(this);
-        DataSupport.deleteAll(DownloadItem.class);
-        //Log.d("url",animationUrl);
-        queryDownload(animationUrl);        //查詢動漫列表
+        if(downloadItemList.isEmpty()){
+            smartRefreshLayout.autoRefresh();
+        }else {
+            smartRefreshLayout.finishRefresh();
+            smartRefreshLayout.finishLoadmore();
+            downloadAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -118,7 +112,7 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
 
     //查詢數據，更新數據庫
     private void queryDownload(final String pageUrl){
-        showProgressDialog();
+        //showProgressDialog();
         new Thread() {
             @Override
             public void run() {
@@ -130,28 +124,23 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                         for (Element downloadlist : allDownloads) {
                             Elements downloads = downloadlist.select("tr");
                             if (downloads.get(0).select("td").get(1).text().split(" ")[0].equals("唔，喵搜娘检索不到相关动画资源")) {
-                                downloadFail = true;
                             } else{
-                                downloadFail = false;
                                 for (Element download : downloads) {
                                     Element downloadNumber = download.select("td").first();
                                     Element downloadName = download.select("td").get(1).select("a").get(0);
                                     Element downloadMessage = download.select("td").get(1).select("p").get(0);
-
-
                                 /*Log.d("number",downloadNumber.text());
                                 Log.d("name",downloadName.text());
                                 Log.d("url","https://nyaso.com" + downloadName.attr("href"));
                                 Log.d("message",downloadMessage.text());
                                 Log.d("page",page + "");*/
-
                                     DownloadItem downloadItem = new DownloadItem();
                                     downloadItem.setDownloadPage(page);
                                     downloadItem.setDownloadNumber(downloadNumber.text());
                                     downloadItem.setDownloadItem(downloadName.text());
                                     downloadItem.setDownloadMessage(downloadMessage.text());
                                     downloadItem.setDownloadUrl("https://nyaso.com" + downloadName.attr("href"));
-                                    downloadItem.save();
+                                    downloadItemList.add(downloadItem);
                                 }
                             }
                         }
@@ -161,32 +150,37 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
                             String attr = pagess.attr("href");
                             if (attr.equals("javascript:alert('已经是最后一页啦！')")) {
                                 isNextPages = false;
-                                maxPage = page;
                             } else {
-
                                 isNextPages = true;
                             }
                         }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    page = page--;
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        closeProgressDialog();
-                        if(downloadFail){
+                        //closeProgressDialog();
+                        //for (DownloadItem downloadItem:downloadItemList){
+                            //Log.d("name",downloadItem.getDownloadItem());
+                            //Log.d("page",downloadItem.getDownloadPage()+"");
+                        //}
+                        if(downloadItemList.isEmpty()){
                             downloadFailText.setText("唔，喵搜娘检索不到相关动画资源 ,,Ծ‸Ծ,,");
                             downloadFailText.setVisibility(View.VISIBLE);
+                            smartRefreshLayout.finishLoadmore();
+                            smartRefreshLayout.finishRefresh();
+                            downloadAdapter.notifyDataSetChanged();
                         }else {
                             downloadFailText.setVisibility(View.GONE);
-                            pageText.setText("第" + page + "页");
-                            charLists = DataSupport.where("downloadPage = ?", String.valueOf(page)).find(DownloadItem.class);
-                            updateData(charLists);
+                            smartRefreshLayout.finishLoadmore();
+                            smartRefreshLayout.finishRefresh();
+                            downloadAdapter.notifyDataSetChanged();
                         }
                     }
                 });
             }
-
         }.start();
 
     }
@@ -197,62 +191,18 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
         switch (buttonId){
             case R.id.downliad_back: finish();
                 break;
-            //上一頁按鍵，先判斷是否為第一頁；是，則顯示彈窗；否，則將page減1，isnextpages設置為true，pagetext更新，從數據庫中查詢數據，更新顯示
-            case R.id.return_page:
-                if(page == 1){
-                    Toast.makeText(this,"已经是第一页啦",Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    page --;
-                    isNextPages = true;
-                    pageText.setText("第" + page + "页");
-                    charLists = DataSupport.where("downloadPage = ?",String.valueOf(page)).find(DownloadItem.class);
-                    downloadRecyclerView.scrollToPosition(0);
-                    updateData(charLists);
-                }
-                break;
-                //下一頁按鍵，先判斷isnextpages；如果為false，彈出最後一頁通知；否則將page加1，然後與最大頁數比較，相等則把isnextpages設置為false；然後
-                //更新顯示，先在數據庫中查詢，如果有則直接更新；沒有則從網絡查詢並更新
-            case R.id.next_page:
-               if(! isNextPages){
-                   Toast.makeText(this,"已经是最后一页啦",Toast.LENGTH_SHORT).show();
-               } else {
-                   page ++;
-                   if(maxPage == page){
-                       isNextPages = false;
-                   }
-                   pageText.setText("第" + page + "页");
-                   charLists = DataSupport.where("downloadPage = ?",String.valueOf(page)).find(DownloadItem.class);
-                   if(charLists.isEmpty()){
-                       downloadRecyclerView.scrollToPosition(0);
-                       String nextPageUrl = animationUrl.split("\\.html")[0];
-                       queryDownload(nextPageUrl + "_" + page + ".html");
-                   }else {
-                       downloadRecyclerView.scrollToPosition(0);
-                       updateData(charLists);
-                   }
-               }
-                break;
         }
 
-    }
-    //更新顯示
-    public void updateData(List<DownloadItem> charLists){
-        downloadItemList.clear();
-        for(DownloadItem charList:charLists){
-            downloadItemList.add(charList);
-        }
-        downloadAdapter.notifyDataSetChanged();
-        this.charLists.clear();
     }
 
     private void showProgressDialog(){
         if(alertDialogBuilder == null){
             alertDialogBuilder = new AlertDialog.Builder(this);
-            View v = View.inflate(this,R.layout.bounce_ball_view,null);
-            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
-            ballView.start();
+            View v = View.inflate(getContext(),R.layout.loading_layout,null);
+            ImageView imageView = (ImageView) v.findViewById(R.id.loading_image);
+            Glide.with(this).load(R.drawable.loading_image).asGif().into(imageView);
             alertDialogBuilder.setView(v);
+            alertDialogBuilder.create();
             alertDialogBuilder.setCancelable(false);
         }
         alertDialog = alertDialogBuilder.show();
@@ -264,5 +214,24 @@ public class DownloadActivity extends AppCompatActivity implements View.OnClickL
             alertDialogBuilder = null;
             alertDialog = null;
         }
+    }
+
+    @Override
+    public void onLoadmore(RefreshLayout refreshlayout) {
+        if(!isNextPages){
+            Toast.makeText(this,"没有更多的数据了",Toast.LENGTH_LONG).show();
+            smartRefreshLayout.finishLoadmore();
+        }else {
+            page=page+1;
+            String nextPageUrl = animationUrl.split("\\.html")[0];
+            queryDownload(nextPageUrl + "_" + page + ".html");
+        }
+    }
+
+    @Override
+    public void onRefresh(RefreshLayout refreshlayout) {
+        page=1;
+        downloadItemList.clear();
+        queryDownload(animationUrl);        //查詢動漫列表
     }
 }

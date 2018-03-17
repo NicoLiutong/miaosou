@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/banckground_setting">
+        <CheckBoxPreference
+            android:title="@string/is_use_network_background"
+            android:key="isUseNetworkBackground"
+            android:summaryOn="@string/use_network_background"
+            android:summaryOff="@string/no_use_network_background"
+            android:defaultValue="true"/>
+        <Preference
+            android:title="@string/background_filepath"
+            android:key="backgroundFilepath"
+            android:summary=""/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/comic_setting">
+        <CheckBoxPreference
+            android:title="@string/comic_show_style"
+            android:key="comicShowStyle"
+            android:summaryOn="@string/comic_show_one_list"
+            android:summaryOff="@string/comic_show_three_list"
+            android:defaultValue="true"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/save_filepath">
+        <Preference
+            android:title="@string/background_save_filepath"
+            android:key="backgroundSaveFilepath"
+            android:summary="sdcarc/miaosou/backgroundpicture"/>
+        <Preference
+            android:title="@string/animation_picture_save_filepath"
+            android:key="animationPictureFilepath"
+            android:summary="sdcarc/miaosou/picture"/>
+        <Preference
+            android:title="@string/cosplay_picture_save_filepath"
+            android:key="cosplayPictureFilepath"
+            android:summary="sdcarc/miaosou/cosplay"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

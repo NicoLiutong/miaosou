@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.animation.R;
 import com.example.animation.customSystem.presenter.ForgetPasswordPresent;
 import com.example.animation.view.LineEditText;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import cn.bmob.v3.exception.BmobException;
 
@@ -31,6 +32,18 @@ public class ForgetPasswordActivity extends BaseActivity<ForgetPasswordView,Forg
         txVerifiedEmail = (LineEditText) findViewById(R.id.forget_password_email);
         btVerified = (Button) findViewById(R.id.forget_password_button);
         btVerified.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this,"忘记密码界面");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     @Override

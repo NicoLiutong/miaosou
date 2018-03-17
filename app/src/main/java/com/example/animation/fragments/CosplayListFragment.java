@@ -6,11 +6,14 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.activity.CosplayListActivity;
 import com.example.animation.adapter.CosplayAdapter;
@@ -49,6 +52,7 @@ public class CosplayListFragment  extends Fragment implements CosplayAdapter.OnC
     private final List<CosplayMessage> cosplayMessageLists = new ArrayList<>();
     private RecyclerView cosplayRv;
     private SmartRefreshLayout smartRefreshLayout;
+    private ImageView smartHeadImageView;
     private CosplayAdapter cosplayAdapter;
     private String cosplayListUrl;
     private int page = 1;
@@ -96,6 +100,9 @@ public class CosplayListFragment  extends Fragment implements CosplayAdapter.OnC
         cosplayRv = (RecyclerView) view.findViewById(R.id.rv_cosplay);
         smartRefreshLayout = (SmartRefreshLayout) view.findViewById(R.id.smart_refresh_layout_cosplay);
         smartRefreshLayout.setOnRefreshLoadmoreListener(this);
+        smartRefreshLayout.setDisableContentWhenRefresh(true);
+        smartHeadImageView = (ImageView) view.findViewById(R.id.smart_cosplay_list_image_view);
+        Glide.with(getActivity()).load(R.drawable.loading_image).asGif().into(smartHeadImageView);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
         cosplayRv.setLayoutManager(layoutManager);
         return view;
@@ -172,8 +179,10 @@ public class CosplayListFragment  extends Fragment implements CosplayAdapter.OnC
             CosplayMessage message = new CosplayMessage();
             message.setPictureUrl(cosplayItem.select("a").get(0).attr("href"));
             //Log.d("chinalgirl-pictureurl",message.getPictureUrl());
-            message.setImageUrl("http://www.chinagirlol.cc/" + cosplayItem.select("img").get(0).attr("src"));
-            //Log.d("chinalgirl-imageurl",message.getImageUrl());
+            if(cosplayItem.select("img").toString()!=null&&!cosplayItem.select("img").toString().equals("")) {
+                message.setImageUrl("http://www.chinagirlol.cc/" + cosplayItem.select("img").get(0).attr("src"));
+                //Log.d("chinalgirl-imageurl", message.getImageUrl());
+            }
             message.setTitle(cosplayItem.select("a").get(0).attr("title"));
             //Log.d("chinalgirl-title",message.getTitle());
             list.add(message);

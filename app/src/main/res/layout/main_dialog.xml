@@ -7,8 +7,8 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_girl"
-        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_main_girl"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_gravity="center_horizontal"/>
     <TextView
@@ -17,11 +17,11 @@
         android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:textSize="13sp"
-        android:textColor="@color/green"
+        android:textColor="@color/red"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginBottom="10dp"
-        android:text="感谢各位对本应用的支持,希望大家分享分享本应用、关注关注公众号、进群一起来Happy、打赏打赏作者"/>
+        android:text="感谢各位对本应用的支持,希望大家多多分享本应用、可以进群一起来Happy、有小钱的的话多多支持以维持服务器能够正常运营"/>
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"

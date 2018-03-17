@@ -12,14 +12,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.adapter.AnimationAdapter;
 import com.example.animation.adapter.DividerItemDecoration;
 import com.example.animation.db.AnimationItem;
-import com.example.animation.view.BounceBallView;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
@@ -53,6 +55,7 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
 
     private RecyclerView mRecyclerView;
 
+    private SmartRefreshLayout smartRefreshLayout;
     private AnimationAdapter oneAnimationAdapter;
 
     private AnimationAdapter twoAnimationAdapter;
@@ -136,6 +139,7 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
     public void onResume() {
         super.onResume();
         MiStatInterface.recordPageStart(getActivity(), "动画列表");
+        showAnimationList();
     }
 
     @Override
@@ -205,13 +209,13 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
         }
     }
     private void clearTextViewColor(){
-        tv_monday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
-        tv_thursday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
-        tv_wednesday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
-        tv_tuesday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
-        tv_friday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
-        tv_saturday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
-        tv_sunday.setTextColor(ContextCompat.getColor(getContext(),R.color.gray));
+        tv_monday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
+        tv_thursday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
+        tv_wednesday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
+        tv_tuesday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
+        tv_friday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
+        tv_saturday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
+        tv_sunday.setTextColor(ContextCompat.getColor(getContext(),R.color.pink));
     }
 
     private void initRecyclerView(){
@@ -221,13 +225,13 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
 
         mRecyclerView.setLayoutManager(layoutManager);
 
-        oneAnimationAdapter = new AnimationAdapter(oneAnimationItems);
-        twoAnimationAdapter = new AnimationAdapter(twoAnimationItems);
-        threeAnimationAdapter = new AnimationAdapter(threeAnimationItems);
-        fourAnimationAdapter = new AnimationAdapter(fourAnimationItems);
-        fiveAnimationAdapter = new AnimationAdapter(fiveAnimationItems);
-        sixAnimationAdapter = new AnimationAdapter(sixAnimationItems);
-        sevenAnimationAdapter = new AnimationAdapter(sevenAnimationItems);
+        oneAnimationAdapter = new AnimationAdapter(oneAnimationItems,0);
+        twoAnimationAdapter = new AnimationAdapter(twoAnimationItems,0);
+        threeAnimationAdapter = new AnimationAdapter(threeAnimationItems,0);
+        fourAnimationAdapter = new AnimationAdapter(fourAnimationItems,0);
+        fiveAnimationAdapter = new AnimationAdapter(fiveAnimationItems,0);
+        sixAnimationAdapter = new AnimationAdapter(sixAnimationItems,0);
+        sevenAnimationAdapter = new AnimationAdapter(sevenAnimationItems,0);
 
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
 
@@ -251,7 +255,9 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
     */
     public void queryAnimation(){
         relativeAnimationList.setVisibility(View.INVISIBLE);
-        showProgressDialog();
+        if(smartRefreshLayout!=null)
+        smartRefreshLayout.autoRefresh();
+        //showProgressDialog();
         new Thread() {
             @Override
             public void run() {
@@ -261,79 +267,92 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
                     Document document = Jsoup.connect("http://ouo.us/anime.html").timeout(3000).post();
                     //String dateName = pref.getString("datename","");
                     if(document.select("title").get(0).text().equals("这里什么都木有喔！- 喵阅ouo.us")){
-
                     }else {
 
                         String date = document.select("option").get(0).text();
 
-                        //Log.d("option",date);
+                        List<AnimationItem> list = DataSupport.findAll(AnimationItem.class);
+                        if(!list.isEmpty()){
+                            if(list.get(0).getAnimationItem().equals("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,")) {
+                                editor = pref.edit();
+                                editor.putString("datename"," ");
+                                editor.apply();
+                            }
+                        }
 
-                        //if(dateName.equals(date)){
-
-                        //}else {
-                        editor = pref.edit();
-                        editor.putString("datename", date);
-                        editor.apply();
-
-                        //Log.d("setoption",pref.getString("datename",""));
-                        DataSupport.deleteAll(AnimationItem.class);
-                        Elements animationlists = document.getElementsByTag("tbody");
-                        for (Element animationlist : animationlists) {
-                            String week = "week" + i;
-                            i++;
-                            Elements animations = animationlist.select("tr");
-                            if(animations.get(0).text().equals("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,")){
-                                //Log.d("11111",animations.get(0).text());
-                                AnimationItem animationItem = new AnimationItem();
-                                animationItem.setWeek(week);
-                                animationItem.setAnimationItem("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,");
-                                animationItem.save();
-                            }else {
-                            for (Element animation : animations) {
-                                Element name = animation.select("a.name").first();
-                                Element type = animation.select("span").get(1);
-                                Elements downloads = animation.select("a.tag");
-                                AnimationItem animationItem = new AnimationItem();
-                                animationItem.setWeek(week);
-                                //Log.d("week", week);
-                                animationItem.setAnimationItem(name.text());
-                                //Log.d("name", name.text());
-                                animationItem.setAnimationType(type.text());
-                                //Log.d("type", type.text());
-                                for (Element download : downloads) {
-                                    if(download.text().equals("资讯")){
-                                        animationItem.setAnimationInformationUrl("http://ouo.us" + download.attr("href"));
-                                    }
-                                    if (download.text().equals("在线")) {
-                                        animationItem.setSeeOnlineUrl(download.attr("href"));
-                                    }
-                                    if (download.text().equals("下载")) {
-                                        animationItem.setDownloadUrl(download.attr("href"));
-                                        //Log.d("url",String.valueOf(download.attr("href")));
+                        if(!pref.getString("datename","").equals(date)) {
+                            editor = pref.edit();
+                            editor.putString("datename", date);
+                            editor.apply();
+                            //Log.d("setoption",pref.getString("datename",""));
+                            DataSupport.deleteAll(AnimationItem.class);
+                            Elements animationlists = document.getElementsByTag("tbody");
+                            for (Element animationlist : animationlists) {
+                                String week = "week" + i;
+                                i++;
+                                Elements animations = animationlist.select("tr");
+                                if (animations.get(0).text().equals("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,")) {
+                                    //Log.d("11111",animations.get(0).text());
+                                    AnimationItem animationItem = new AnimationItem();
+                                    animationItem.setWeek(week);
+                                    animationItem.setAnimationItem("新番信息整理中，过段时间再来看看吧 ,,Ծ‸Ծ,,");
+                                    animationItem.save();
+                                } else {
+                                    for (Element animation : animations) {
+                                        Element name = animation.select("a.name").first();
+                                        Element type = animation.select("span").get(1);
+                                        Elements downloads = animation.select("a.tag");
+                                        AnimationItem animationItem = new AnimationItem();
+                                        animationItem.setWeek(week);
+                                        animationItem.setFavortiy(false);
+                                        //Log.d("week", week);
+                                        animationItem.setAnimationItem(name.text());
+                                        //Log.d("name", name.text());
+                                        animationItem.setAnimationType(type.text());
+                                        //Log.d("type", type.text());
+                                        for (Element download : downloads) {
+                                            if (download.text().equals("资讯")) {
+                                                animationItem.setAnimationInformationUrl("http://ouo.us" + download.attr("href"));
+                                            }
+                                            if (download.text().equals("在线")) {
+                                                animationItem.setSeeOnlineUrl(download.attr("href"));
+                                            }
+                                            if (download.text().equals("下载")) {
+                                                animationItem.setDownloadUrl(download.attr("href"));
+                                                //Log.d("url",String.valueOf(download.attr("href")));
+                                            }
+                                        }
+                                        animationItem.save();
                                     }
                                 }
-
-                                animationItem.save();
                             }
-                    }
-
                         }
                     }
-                    //}
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showAnimationList();
-                        closeProgressDialog();
-                        relativeAnimationList.setVisibility(View.VISIBLE);
-                    }
-                });
+                if(getActivity()!=null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showAnimationList();
+                            //closeProgressDialog();
+                            if(smartRefreshLayout!=null)
+                            smartRefreshLayout.finishRefresh();
+                            relativeAnimationList.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
             }
 
         }.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(smartRefreshLayout!=null)
+        smartRefreshLayout.finishRefresh();
     }
 
     private void showAnimationList(){
@@ -400,10 +419,11 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
     private void showProgressDialog(){
         if(alertDialogBuilder== null){
             alertDialogBuilder = new AlertDialog.Builder(getContext());
-            View v = View.inflate(getContext(),R.layout.bounce_ball_view,null);
-            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
-            ballView.start();
+            View v = View.inflate(getContext(),R.layout.loading_layout,null);
+            ImageView imageView = (ImageView) v.findViewById(R.id.loading_image);
+            Glide.with(this).load(R.drawable.loading_image).asGif().into(imageView);
             alertDialogBuilder.setView(v);
+            alertDialogBuilder.create();
             //progressDialog.setMessage("正在加载...");
             alertDialogBuilder.setCancelable(false);
         }
@@ -451,4 +471,9 @@ public class AnimationFragment extends Fragment implements View.OnClickListener{
                 break;
         }
     }
+
+    public void setSmartRefreshLayout(SmartRefreshLayout refreshLayout){
+        smartRefreshLayout = refreshLayout;
+    }
+
 }

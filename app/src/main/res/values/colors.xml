@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimary">#406ed1</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#e24d7f</color>
     <color name="red">#ff0000</color>
     <color name="blue">#1da5d0</color>
     <color name="pink">#6040b0</color>
@@ -22,4 +22,14 @@
     <color name="login_back">#4f000000</color>
     <color name="edit_line">#ffffff</color>
     <color name="affirm_color">#0a000000</color>
+    <color name="animation_favourity">#f0ce55c8</color>
+    <color name="affirm">#b8ffffff</color>
+    <color name="gray_affirm">#be434343</color>
+    <color name="affirm_pink">#c8e24d7f</color>
+    <color name="affirm_blue">#c8406ed1</color>
+    <color name="affirm_reseda">#c880b0b0</color>
+    <color name="affirm_green">#c84caf50</color>
+    <color name="affirm_purple">#c86040b0</color>
+    <color name="affirm_animation_favourity">#c8ce55c8</color>
+    <color name="home_background_gray_color">#2b000000</color>
 </resources>

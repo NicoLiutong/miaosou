@@ -82,10 +82,20 @@ android:layout_height="match_parent">
             android:textColor="@color/gray"
             android:text="星期天"/>
     </LinearLayout>
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/smart_animation_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ll_viewpager">
+        <ImageView
+            android:id="@+id/iv_animation_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_animation_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_viewpager"
+
         android:padding="5dp"/>
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 </RelativeLayout>

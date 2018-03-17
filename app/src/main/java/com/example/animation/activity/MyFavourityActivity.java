@@ -1,78 +1,69 @@
 package com.example.animation.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import com.example.animation.adapter.ComicSearchResultAdapter;
 import com.example.animation.R;
-import com.example.animation.db.ComicMessageItem;
-import com.example.animation.db.ComicSearchResultList;
-
-import org.litepal.crud.DataSupport;
+import com.example.animation.fragments.AnimationFavourite;
+import com.example.animation.fragments.ComicFavourite;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyFavourityActivity extends AppCompatActivity {
 
-    private List<ComicMessageItem> comicMessageItems;
-
-    private List<ComicSearchResultList> myFavourityLists = new ArrayList<>();
-
     private Button backButton;
-
-    private TextView tvHaveMyFavourity;
-
-    private RecyclerView myFavourityRecyclerview;
-
-    private ComicSearchResultAdapter myFavourityAdapter;
-
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private String[] title = {"漫画","动画"};
+    private List<Fragment> fragmentList;
+    private adapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_favourity);
         backButton = (Button) findViewById(R.id.my_favourityBack);
-        tvHaveMyFavourity = (TextView) findViewById(R.id.tv_myfavourity);
-        myFavourityRecyclerview = (RecyclerView) findViewById(R.id.my_favourityRecyclerview);
+        tabLayout = (TabLayout) findViewById(R.id.tl_favourity);
+        viewPager = (ViewPager) findViewById(R.id.vp_favourite);
+        fragmentList = new ArrayList<>();
+        fragmentList.add(new ComicFavourite());
+        fragmentList.add(new AnimationFavourite());
+        adapter = new adapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        tabLayout.setupWithViewPager(viewPager);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        //設置recyclerview的屬性
-        GridLayoutManager layoutManager = new GridLayoutManager(MyFavourityActivity.this,2);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        myFavourityRecyclerview.setLayoutManager(layoutManager);
-        myFavourityAdapter = new ComicSearchResultAdapter(myFavourityLists);
-        myFavourityRecyclerview.setAdapter(myFavourityAdapter);
-        //查詢並顯示favourity的數據
-        myFavourityLists.clear();
-        comicMessageItems = DataSupport.findAll(ComicMessageItem.class);
-        for(ComicMessageItem comicMessageItem:comicMessageItems){
-            if(comicMessageItem.isMyFavourity()) {
-                ComicSearchResultList comicSearchResultList = new ComicSearchResultList();
-                comicSearchResultList.setComicImageUrl(comicMessageItem.getComicImageUrl());
-                comicSearchResultList.setComicName(comicMessageItem.getComicName());
-                comicSearchResultList.setComicUrl(comicMessageItem.getComicUrl());
 
-                /*Log.d("ComicImageUrl", comicMessageItem.getComicImageUrl());
-                Log.d("ComicName", comicMessageItem.getComicName());
-                Log.d("ComicUrl", comicMessageItem.getComicImageUrl());*/
-
-                myFavourityLists.add(comicSearchResultList);
-            }
+    }
+    class adapter extends FragmentPagerAdapter {
+        public adapter(FragmentManager fm) {
+            super(fm);
         }
-        if(myFavourityLists.isEmpty()){
-            tvHaveMyFavourity.setVisibility(View.VISIBLE);
-        }else {
-            tvHaveMyFavourity.setVisibility(View.INVISIBLE);
+
+        @Override
+        public Fragment getItem(int position) {
+            return fragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return fragmentList.size();
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return title[position];
         }
     }
 }

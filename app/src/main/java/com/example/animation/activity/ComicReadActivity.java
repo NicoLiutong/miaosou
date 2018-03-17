@@ -1,5 +1,6 @@
 package com.example.animation.activity;
 
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -10,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,12 +21,14 @@ import com.example.animation.R;
 import com.example.animation.adapter.DepthPageTransformer;
 import com.example.animation.adapter.MyPageAdapter;
 import com.example.animation.db.ComicViewPager;
+import com.example.animation.db.ReadNowComic;
 import com.example.animation.fragments.ComicFragment;
 import com.example.animation.fragments.ComicReadFragment;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +55,7 @@ public class ComicReadActivity extends AppCompatActivity implements View.OnClick
 
     private List<ComicViewPager> comicViewPagerList = new ArrayList<>();
     private List<String> comicImageUrl = new ArrayList<>();
+    private ReadNowComic readNowComic = null;
 
     private ViewPager viewPager;
 
@@ -136,7 +139,19 @@ public class ComicReadActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void setView() {
+        if(DataSupport.where("comicUrl=?",comicUrl).find(ReadNowComic.class).isEmpty()){
+            ReadNowComic nowComic = new ReadNowComic();
+            nowComic.setComicUrl(comicUrl);
+            nowComic.setPages(1);
+            nowComic.save();
+            readNowComic = nowComic;
+        }else {
+            readNowComic = DataSupport.where("comicUrl=?",comicUrl).find(ReadNowComic.class).get(0);
+        }
         tvComicReadPage.setText("第" + comicReadPage);
+        //Log.d("pages",readNowComic.getPages()+"");
+        currentReadPage = readNowComic.getPages();
+        //viewPager.setCurrentItem(currentReadPage);
         comicPagesText.setText(currentReadPage + "/" + comicImageUrl.size());
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -208,6 +223,9 @@ public class ComicReadActivity extends AppCompatActivity implements View.OnClick
         super.onDestroy();
         comicViewPagerList.clear();
         pageAdapter.notifyDataSetChanged();
+        ContentValues values = new ContentValues();
+        values.put("pages",currentReadPage);
+        DataSupport.updateAll(ReadNowComic.class,values,"comicUrl=?",comicUrl);
     }
 
     @Override
@@ -273,7 +291,7 @@ public class ComicReadActivity extends AppCompatActivity implements View.OnClick
                 break;
         }
         comicUrl = getComicUrl(comicUrlGet);
-        Log.d("comicurl",comicUrl);
+        //Log.d("comicurl",comicUrl);
         setTVComicUrlLines(tvComicUrlLines);
         queryComicUrl();
     }

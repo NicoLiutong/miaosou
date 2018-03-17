@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_marginTop="5dp"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
-<LinearLayout
-    android:orientation="horizontal"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+                android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/ll_comic_list_top_button"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+    >
     <TextView
         android:id="@+id/hot"
         android:layout_width="0dp"
@@ -20,7 +22,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
         android:background="@color/transparent"
-        android:textColor="@color/blue"
+        android:textColor="@color/gray"
         android:textSize="16sp"
         android:text="热门"/>
 
@@ -36,7 +38,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
         android:background="@color/transparent"
-        android:textColor="@color/blue"
+        android:textColor="@color/gray"
         android:textSize="16sp"
         android:text="冒险"/>
 
@@ -52,7 +54,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
         android:background="@color/transparent"
-        android:textColor="@color/blue"
+        android:textColor="@color/gray"
         android:textSize="16sp"
         android:text="魔法"/>
 
@@ -68,7 +70,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
         android:background="@color/transparent"
-        android:textColor="@color/blue"
+        android:textColor="@color/gray"
         android:textSize="16sp"
         android:text="竞技"/>
 
@@ -84,13 +86,14 @@
         android:layout_marginBottom="2dp"
         android:layout_marginTop="2dp"
         android:background="@color/transparent"
-        android:textColor="@color/blue"
+        android:textColor="@color/gray"
         android:textSize="16sp"
         android:text="少女"/>
 
 </LinearLayout>
-
     <LinearLayout
+        android:id="@+id/ll_comic_list_mid_button"
+        android:layout_below="@id/ll_comic_list_top_button"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -106,7 +109,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginTop="2dp"
             android:background="@color/transparent"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray"
             android:textSize="16sp"
             android:text="校园"/>
 
@@ -122,7 +125,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginTop="2dp"
             android:background="@color/transparent"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray"
             android:textSize="16sp"
             android:text="搞笑"/>
 
@@ -138,7 +141,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginTop="2dp"
             android:background="@color/transparent"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray"
             android:textSize="16sp"
             android:text="科幻"/>
 
@@ -154,7 +157,7 @@
             android:layout_marginBottom="2dp"
             android:layout_marginTop="2dp"
             android:background="@color/transparent"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray"
             android:textSize="16sp"
             android:text="恐怖"/>
 
@@ -170,17 +173,14 @@
             android:layout_marginBottom="2dp"
             android:layout_marginTop="2dp"
             android:background="@color/transparent"
-            android:textColor="@color/blue"
+            android:textColor="@color/gray"
             android:textSize="16sp"
             android:text="随机"/>
-
     </LinearLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/comic_recycler"
+        android:layout_below="@id/ll_comic_list_mid_button"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
     </android.support.v7.widget.RecyclerView>
-</LinearLayout>
+</RelativeLayout>

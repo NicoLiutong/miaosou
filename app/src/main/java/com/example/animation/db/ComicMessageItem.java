@@ -18,6 +18,18 @@ public class ComicMessageItem extends DataSupport {
 
     private String comicName;
 
+    public ComicMessageItem(){
+
+    }
+
+    public ComicMessageItem(String comicUrl,Boolean myFavourity,String readNow,String comicImageUrl,String comicName){
+        this.comicUrl = comicUrl;
+        this.myFavourity = myFavourity;
+        this.readNow = readNow;
+        this.comicImageUrl = comicImageUrl;
+        this.comicName = comicName;
+    }
+
     public String getComicName() {
         return comicName;
     }

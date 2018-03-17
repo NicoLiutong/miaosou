@@ -22,6 +22,7 @@ import com.example.animation.R;
 import com.example.animation.Util.SavePicture;
 import com.example.animation.customSystem.bease.User;
 import com.oginotihiro.cropview.CropView;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import java.io.File;
 
@@ -37,6 +38,7 @@ public class ChangeUserPictureActivity extends AppCompatActivity implements View
     private Button btCropFinish;
     private CropView cropView;
     private User user;
+    private boolean canFinish = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +47,24 @@ public class ChangeUserPictureActivity extends AppCompatActivity implements View
         txTitle = (TextView) findViewById(R.id.basic_texttitle);
         txTitle.setText("修改头像");
         btCropFinish = (Button) findViewById(R.id.crop_picture_finish);
-        btCropFinish.setOnClickListener(this);
+        if(canFinish){
+            btCropFinish.setOnClickListener(this);
+        }
         cropView = (CropView) findViewById(R.id.crop_view);
         user = BmobUser.getCurrentUser(User.class);
         getPermission();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this,"修改头像");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     private void getPermission(){
@@ -102,6 +118,7 @@ public class ChangeUserPictureActivity extends AppCompatActivity implements View
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.crop_picture_finish:
+                canFinish = false;
                 //设置progress
                 final ProgressDialog dialog = ProgressDialog.show(this, null, "请等待…", true, false);
                 final BmobFile deletFail = new BmobFile();
@@ -109,6 +126,7 @@ public class ChangeUserPictureActivity extends AppCompatActivity implements View
                 final String filepath = Environment.getExternalStorageDirectory().toString() + File.separator + "miaosou" + File.separator + "user" + File.separator;
                 final String filename = user.getObjectId();
                 Bitmap bitmap = cropView.getOutput();
+                //if(CropUtil.saveOutput(this, Uri.parse(filepath+filename+".jpg"),bitmap,50)){
                 if(SavePicture.savePicture(filepath,bitmap,filename,ChangeUserPictureActivity.this)) {
                     final BmobFile bmobFile = new BmobFile(new File(filepath, filename + ".jpg"));
                     bmobFile.uploadblock(new UploadFileListener() {

@@ -4,11 +4,13 @@ import android.Manifest;
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -28,7 +30,10 @@ import com.example.animation.R;
 import com.example.animation.Util.ACache;
 import com.example.animation.Util.LoadImageAsync;
 import com.example.animation.Util.SavePicture;
+import com.example.animation.db.PictureSaveManager;
 import com.example.animation.view.RoundProgressBarWithNumber;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.io.IOException;
@@ -61,6 +66,7 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     private TextView tvLoadingCurrentPage;
     private Button btLoadingFailed;
     private RoundProgressBarWithNumber pbLoadingProgress;
+    private String savePicturePath = "";
 
     public static final ComicReadFragment newInstance(String imageUrl,Integer currentPage,String pictureId,String type){
         ComicReadFragment comicReadFragment = new ComicReadFragment();
@@ -138,7 +144,7 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     public void onPause() {
         super.onPause();
         //Log.d("onPause",currentPage+"-onPause");
-    }
+         }
 
     @Override
     public void onStop() {
@@ -179,8 +185,9 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
     private void loadingImage(){
         pictureBitmap = mCache.getAsBitmap(pictureId);
         if(pictureBitmap == null){
-        loadImageAsync = new LoadImageAsync(this);
-        loadImageAsync.execute(imageUrl);
+            loadImageAsync = new LoadImageAsync(this);
+            //loadImageAsync.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,imageUrl);
+            loadImageAsync.execute(imageUrl);
         }else {
             llLoadingProgress.setVisibility(View.INVISIBLE);
             comicPhotoView.setVisibility(View.VISIBLE);
@@ -256,8 +263,10 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
         String filepath = null;
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)){
+            SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getActivity());
             filepath = Environment.getExternalStorageDirectory().toString() + File.separator + "miaosou" + File.separator + "picture" + File.separator;
-            flag = SavePicture.savePicture(filepath,bitmap,pictureId,getActivity());
+            savePicturePath = p.getString("animationPictureFilepath",filepath)+pictureId+".jpg";
+            flag = SavePicture.savePicture(p.getString("animationPictureFilepath",filepath),bitmap,pictureId,getActivity());
         }else {
             Toast.makeText(getActivity(),"请开启读写SD卡权限",Toast.LENGTH_SHORT).show();
         }
@@ -281,7 +290,12 @@ public class ComicReadFragment extends Fragment implements LoadImageAsync.OnLoad
                     saveSuccess = savePicture(pictureBitmap);
                 }
                 if(saveSuccess){
-                    Toast.makeText(getActivity(),"图片已存储在 /miaosou/picture 文件夹下",Toast.LENGTH_SHORT).show();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    if(DataSupport.where("filePath = ?",savePicturePath).find(PictureSaveManager.class).isEmpty()) {
+                        PictureSaveManager saveManager = new PictureSaveManager(savePicturePath, 1);
+                        saveManager.save();
+                    }
+                    Toast.makeText(getActivity(),"图片已存储在"+preferences.getString("animationPictureFilepath","sdcard/miaosou.picture"),Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(getActivity(),"图片保存失败，请检查SD卡读写权限是否开启",Toast.LENGTH_SHORT).show();
                 }

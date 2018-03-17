@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -127,7 +126,7 @@ public class CosplayListActivity extends AppCompatActivity implements MyScorllVi
             message.setImageUrl(imageUrl);
             message.setImageId(imageUrl.substring(imageUrl.lastIndexOf("/")+1,imageUrl.lastIndexOf(".")));
             cosplayImageMessages.add(message);
-            Log.d("imageUrl",message.getImageUrl());
+            //Log.d("imageUrl",message.getImageUrl());
         }
     }
 
@@ -156,6 +155,7 @@ public class CosplayListActivity extends AppCompatActivity implements MyScorllVi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        myScorllView.isCancelletLoadImages(true);
         ImageLoader.clearCosplayImageMessages();
     }
 }

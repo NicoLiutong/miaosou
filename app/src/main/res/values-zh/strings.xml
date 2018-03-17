@@ -6,10 +6,13 @@
     <string name="copyright">Copyright © 2015&#045;%d SWUST</string>
     <string name="about_name">一只萌萌的Nico酱</string>
     <string name="about_github">https://github.com/NicoLiutong</string>
+    <string name="image_search">以图识图</string>
     <string name="about_author">关于</string>
+    <string name="setting">设置</string>
+    <string name="dowmload_manager">下载管理</string>
     <string name="chatting">闲聊么</string>
     <string name="share">分享</string>
-    <string name="about_exit">退出</string>
+    <string name="about_check_updata">检查更新</string>
     <string name="animation_news">动漫资讯</string>
     <string name="animation_picture">二次元美图</string>
     <string name="cosplay_picture">三次元美图</string>
@@ -43,4 +46,21 @@
     <string name="register_confirm_password">确认密码：</string>
     <string name="register_edit_confirm_password">请与密码保持一致</string>
     <string name="register_register">注册</string>
+
+    <string name="search_more">搜索</string>
+
+    <string name="app_setting">设置</string>
+    <string name="banckground_setting">背景图片设定</string>
+    <string name="is_use_network_background">是否启用网络图片</string>
+    <string name="use_network_background">启用</string>
+    <string name="no_use_network_background">不启用</string>
+    <string name="background_filepath">背景图片路径</string>
+    <string name="comic_setting">漫画</string>
+    <string name="comic_show_style">漫画显示样式</string>
+    <string name="comic_show_one_list">一列</string>
+    <string name="comic_show_three_list">三列</string>
+    <string name="save_filepath">保存路径</string>
+    <string name="background_save_filepath">背景图片保存路径</string>
+    <string name="animation_picture_save_filepath">动漫图片保存路径</string>
+    <string name="cosplay_picture_save_filepath">cosplay图片保存路径</string>
 </resources>

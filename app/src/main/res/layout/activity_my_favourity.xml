@@ -31,26 +31,15 @@
             android:textSize="19sp"
             />
     </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_favourityRecyclerview"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_favourity"
         android:layout_below="@id/ll_myfavourity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
-
-    <TextView
-        android:id="@+id/tv_myfavourity"
+        android:layout_height="wrap_content"/>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_favourite"
+        android:layout_below="@id/tl_favourity"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/ll_myfavourity"
-        android:background="@color/white"
-        android:visibility="gone"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="主人还没有收藏喵！！"
-        android:textColor="@color/gray"
-        />
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

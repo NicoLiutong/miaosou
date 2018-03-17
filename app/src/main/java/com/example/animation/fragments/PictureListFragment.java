@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.activity.PictureShowActivity;
 import com.example.animation.adapter.PictureAdapter;
@@ -46,6 +48,7 @@ public class PictureListFragment extends Fragment implements PictureAdapter.OnCl
     private final List<AnimationPicture> pictureList = new ArrayList<>();
     private RecyclerView picturesRv;
     private SmartRefreshLayout smartRefreshLayout;
+    private ImageView smartHeadImageView;
     private PictureAdapter pictureAdapter;
     private String PictureListUrl;
     private String searchName;
@@ -92,6 +95,9 @@ public class PictureListFragment extends Fragment implements PictureAdapter.OnCl
         smartRefreshLayout = (SmartRefreshLayout) view.findViewById(R.id.smart_refresh_layout_picture);
         smartRefreshLayout.setOnRefreshLoadmoreListener(this);
         smartRefreshLayout.setEnableLoadmoreWhenContentNotFull(true);
+        smartRefreshLayout.setDisableContentWhenRefresh(true);
+        smartHeadImageView = (ImageView) view.findViewById(R.id.smart_picture_list_image_view);
+        Glide.with(getActivity()).load(R.drawable.loading_image).asGif().into(smartHeadImageView);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),3);
         picturesRv.setLayoutManager(layoutManager);
         return view;

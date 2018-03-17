@@ -46,6 +46,7 @@ public class AnimationNewActivity extends AppCompatActivity implements ViewPager
         newsFragmentLists.add(hotNewsFragment);
         newsFragmentLists.add(tuiNewsFragment);
         newsViewPagerAdapter = new NewsViewPagerAdapter(getSupportFragmentManager(),newsFragmentLists);
+        vpNews.setOffscreenPageLimit(3);
         vpNews.setAdapter(newsViewPagerAdapter);
         vpNews.addOnPageChangeListener(this);
     }

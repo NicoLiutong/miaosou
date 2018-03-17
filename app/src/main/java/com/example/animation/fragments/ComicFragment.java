@@ -1,22 +1,29 @@
 package com.example.animation.fragments;
 
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.animation.adapter.ComicAdapter;
-import com.example.animation.db.ComicItem;
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
-import com.example.animation.view.BounceBallView;
+import com.example.animation.adapter.ComicAdapter;
+import com.example.animation.adapter.ComicSearchResultAdapter;
+import com.example.animation.db.ComicItem;
+import com.example.animation.db.ComicSearchResultList;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import org.jsoup.Jsoup;
@@ -39,10 +46,6 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
     public static final String COMICURL = "comicurl";   
 
     public static final String COMICREADURL = "comicreadurl";
-
-    public static final String COMICREADEPISODES = "comicreadepisodes";
-
-    public static final String COMICREADPAGE = "comicreadpage";
 
     private static final String hotUrl = "https://nyaso.com/comic.html?t=hot";
 
@@ -87,7 +90,7 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
     private TextView horrorTextView;
 
     private TextView randTextView;
-
+    private SmartRefreshLayout smartRefreshLayout;
     private AlertDialog.Builder alertDialogBuilder;
 
     private AlertDialog alertDialog;
@@ -95,22 +98,27 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
     private RecyclerView comicRecyclerView;
 
     private ComicAdapter comicAdapter;
-
+    private ComicSearchResultAdapter comicTwoLineAdpter;
     private List<ComicItem> comicItemList = new ArrayList<>();
+    private List<ComicSearchResultList> comicItemTwoLineList = new ArrayList<>();
 
     private List<ComicItem> comicDate;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.comic_list,container,false);
+        preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         comicRecyclerView = (RecyclerView)  view.findViewById(R.id.comic_recycler);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        comicRecyclerView.setLayoutManager(layoutManager);
         comicAdapter = new ComicAdapter(comicItemList);
-        comicRecyclerView.setNestedScrollingEnabled(false);
-        comicRecyclerView.setAdapter(comicAdapter);
+        comicTwoLineAdpter = new ComicSearchResultAdapter(comicItemTwoLineList);
+        if(preferences.getBoolean("comicShowStyle",true)){
+            creatOneLineList();
+        }else {
+            creatTwoLineList();
+        }
 
         hotTextView =(TextView) view.findViewById(R.id.hot);
         advTextView = (TextView) view.findViewById(R.id.adv);
@@ -143,8 +151,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
         */
         setStartColor();
         comicUrl = hotUrl;
-        hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-        hotTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+        //hotTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
         comicType = "hot";
         updateComicList();
         return view;
@@ -191,8 +199,9 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
    2、查詢數據更新列表
    */
     private void queryComic(){
-        showProgressDialog();
-
+        //showProgressDialog();
+        if(smartRefreshLayout!=null)
+        smartRefreshLayout.autoRefresh();
         new Thread(){
             @Override
             public void run() {
@@ -229,25 +238,45 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
                 catch (IOException e){
                     e.printStackTrace();
                 }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateComic();
-                        closeProgressDialog();
-                    }
-                });
+                if(getActivity()!=null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateComic();
+                            //closeProgressDialog();
+                            if(smartRefreshLayout!=null)
+                            smartRefreshLayout.finishRefresh();
+                        }
+                    });
+                }
             }
         }.start();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(smartRefreshLayout!=null)
+        smartRefreshLayout.finishRefresh();
     }
 
     //更新顯示
     private void updateComic(){
         comicItemList.clear();
+        comicItemTwoLineList.clear();
         comicDate = DataSupport.where("comicType = ?",comicType).find(ComicItem.class);
         for(ComicItem comicItem:comicDate){
             comicItemList.add(comicItem);
         }
+        for(ComicItem comicItem:comicDate){
+            ComicSearchResultList list = new ComicSearchResultList();
+            list.setComicName(comicItem.getComicName());
+            list.setComicPages(comicItem.getUpdateClass());
+            list.setComicImageUrl(comicItem.getBackgroundUrl());
+            list.setComicUrl(comicItem.getComicUrl());
+            comicItemTwoLineList.add(list);
+        }
+        comicTwoLineAdpter.notifyDataSetChanged();
         comicAdapter.notifyDataSetChanged();
         comicDate.clear();
     }
@@ -258,8 +287,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.hot :
                 setStartColor();
                 comicUrl = hotUrl;
-                hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                hotTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //hotTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "hot";
                 updateComicList();
                 break;
@@ -267,8 +296,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.adv :
                 setStartColor();
                 comicUrl = advUrl;
-                advTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                advTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                advTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //advTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "adv";
                 updateComicList();
                 break;
@@ -276,8 +305,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.magic :
                 setStartColor();
                 comicUrl = magicUrl;
-                magicTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                magicTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                magicTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //magicTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "magic";
                 updateComicList();
                 break;
@@ -285,8 +314,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.fight :
                 setStartColor();
                 comicUrl = fightUrl;
-                fightTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                fightTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                fightTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //fightTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "fight";
                 updateComicList();
                 break;
@@ -294,8 +323,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.girl :
                 setStartColor();
                 comicUrl = girlUrl;
-                girlTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                girlTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                girlTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //girlTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "girl";
                 updateComicList();
                 break;
@@ -303,8 +332,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.school :
                 setStartColor();
                 comicUrl = schoolUrl;
-                schoolTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                schoolTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                schoolTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //schoolTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "school";
                 updateComicList();
                 break;
@@ -312,8 +341,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.funny :
                 setStartColor();
                 comicUrl = funnyUrl;
-                funnyTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                funnyTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                funnyTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //funnyTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "funny";
                 updateComicList();
                 break;
@@ -321,8 +350,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.tech :
                 setStartColor();
                 comicUrl = techUrl;
-                techTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                techTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                techTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //techTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "tech";
                 updateComicList();
                 break;
@@ -330,8 +359,8 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.horror :
                 setStartColor();
                 comicUrl = horrorUrl;
-                horrorTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                horrorTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                horrorTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //horrorTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "horror";
                 updateComicList();
                 break;
@@ -339,45 +368,61 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             case R.id.rand :
                 setStartColor();
                 comicUrl = randUrl;
-                randTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
-                randTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
+                randTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.red));
+                //randTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.blue));
                 comicType = "rand";
                 updateComicList();
                 break;
         }
     }
 
+    private void creatOneLineList(){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        comicRecyclerView.setLayoutManager(layoutManager);
+        comicRecyclerView.setNestedScrollingEnabled(false);
+        comicRecyclerView.setAdapter(comicAdapter);
+    }
+
+    private void creatTwoLineList(){
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(),3);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        comicRecyclerView.setLayoutManager(layoutManager);
+        comicRecyclerView.setNestedScrollingEnabled(false);
+        comicRecyclerView.setAdapter(comicTwoLineAdpter);
+    }
+
 
 
     private void setStartColor(){
-        hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        hotTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         hotTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        advTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        advTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         advTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        magicTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        magicTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         magicTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        fightTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        fightTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         fightTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        girlTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        girlTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         girlTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        schoolTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        schoolTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         schoolTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        funnyTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        funnyTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         funnyTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        techTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        techTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         techTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        horrorTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        horrorTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         horrorTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
-        randTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.blue));
+        randTextView.setTextColor(ContextCompat.getColor(getActivity(),R.color.pink));
         randTextView.setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.transparent));
 
 
@@ -386,10 +431,11 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
     private void showProgressDialog(){
         if(alertDialogBuilder == null){
             alertDialogBuilder = new AlertDialog.Builder(getContext());
-            View v = View.inflate(getContext(),R.layout.bounce_ball_view,null);
-            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
-            ballView.start();
+            View v = View.inflate(getContext(),R.layout.loading_layout,null);
+            ImageView imageView = (ImageView) v.findViewById(R.id.loading_image);
+            Glide.with(this).load(R.drawable.loading_image).asGif().into(imageView);
             alertDialogBuilder.setView(v);
+            alertDialogBuilder.create();
             //progressDialog.setMessage("正在加载...");
             alertDialogBuilder.setCancelable(false);
         }
@@ -402,5 +448,9 @@ public class ComicFragment extends Fragment implements View.OnClickListener{
             alertDialogBuilder = null;
             alertDialog = null;
         }
+    }
+
+    public void setSmartRefreshLayout(SmartRefreshLayout refreshLayout){
+        smartRefreshLayout = refreshLayout;
     }
 }

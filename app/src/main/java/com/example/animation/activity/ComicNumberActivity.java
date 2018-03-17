@@ -3,13 +3,18 @@ package com.example.animation.activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,8 +22,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.animation.R;
 import com.example.animation.adapter.ComicNumberAdapter;
+import com.example.animation.adapter.SelectComicDownloadAdapter;
 import com.example.animation.db.ComicMessageItem;
 import com.example.animation.db.ComicNumberList;
+import com.example.animation.db.DownloadComic;
+import com.example.animation.db.DownloadComicSelectList;
 import com.example.animation.fragments.ComicFragment;
 import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
@@ -54,11 +62,13 @@ public class ComicNumberActivity extends AppCompatActivity {
 
     private String comicIntroduction;
 
-    private List<ComicNumberList> comicNumberLists = new ArrayList<>();
+    private static List<ComicNumberList> comicNumberLists = new ArrayList<>();
 
     private ComicMessageItem comicMessageItem;
 
     private Button backButton;
+
+    private Button btDownloadComic;
 
     private TextView numberNameView;
 
@@ -80,11 +90,7 @@ public class ComicNumberActivity extends AppCompatActivity {
 
     private CardView numberFavourityCard;
 
-//    private CardView numberSeeNextCard;
-
     private Button numberFavourityButton;
-
- //   private Button numberSeeNextButton;
 
     private RecyclerView numberRecyclerView;
 
@@ -116,6 +122,7 @@ public class ComicNumberActivity extends AppCompatActivity {
 
     private void initialize(){
         backButton = (Button) findViewById(R.id.comic_numberBack);
+        btDownloadComic = (Button) findViewById(R.id.comic_download);
         numberNameView = (TextView) findViewById(R.id.comic_numberName);
         numberImageview = (ImageView) findViewById(R.id.comic_numberImage);
         numberUpdateTypeView = (TextView) findViewById(R.id.comic_numberUpdateType);
@@ -167,14 +174,24 @@ public class ComicNumberActivity extends AppCompatActivity {
             }
         });
 
+        btDownloadComic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment dialogFragment = new DownloadDialogFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("comicName",comicName);
+                bundle.putString("comicImageUrl",comicImageUrl);
+                bundle.putString("comicId",comicUrl.substring(comicUrl.lastIndexOf("/")+1,comicUrl.lastIndexOf(".")));
+                dialogFragment.setArguments(bundle);
+                dialogFragment.show(getSupportFragmentManager(),"downloadComic");
+            }
+        });
+
         numberFavourityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(comicMessageItem.isMyFavourity()){
                     numberFavourityCard.setCardBackgroundColor(ContextCompat.getColor(ComicNumberActivity.this,R.color.colorAccent));
-                    /*ComicMessageItem myFavourity = new ComicMessageItem();
-                    myFavourity.setMyFavourity(false);
-                    myFavourity.updateAll("comicUrl = ?",comicUrl);*/
                     ContentValues values = new ContentValues();
                     values.put("myFavourity",false);
                     values.put("comicImageUrl","");
@@ -185,9 +202,6 @@ public class ComicNumberActivity extends AppCompatActivity {
 
                 }else {
                 numberFavourityCard.setCardBackgroundColor(ContextCompat.getColor(ComicNumberActivity.this,R.color.colorPrimary));
-                    /*ComicMessageItem myFavourity = new ComicMessageItem();
-                    myFavourity.setMyFavourity(true);
-                    myFavourity.updateAll("comicUrl = ?",comicUrl);*/
                     ContentValues values = new ContentValues();
                     values.put("myFavourity",true);
                     values.put("comicImageUrl",comicImageUrl);
@@ -200,36 +214,6 @@ public class ComicNumberActivity extends AppCompatActivity {
 
             }
         });
-
-     /*   numberSeeNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(comicMessageItem.getReadNow().isEmpty()){
-                    //设置list的最后一个选项把lastread更true，并更新数据库
-                    comicNumberLists.get(comicNumberLists.size()-1).setComicLastRead(true);
-                    ComicMessageItem readNow = new ComicMessageItem();
-                    readNow.setReadNow(comicNumberLists.get(comicNumberLists.size()-1).getComicPages());
-                    //adapter更新
-                    numberAdapter.notifyDataSetChanged();
-                    Intent intent = new Intent(ComicNumberActivity.this,ComicReadActivity.class);
-                    intent.putExtra(ComicFragment.COMICREADURL,comicNumberLists.get(comicNumberLists.size()-1).getComicPagesUrl());
-                    startActivity(intent);
-
-                }else {
-                    //从list找出lastread为true的项目
-                    String comicPageUrl = null;
-                    for (int i = 0;i < comicNumberLists.size();i++){
-                        if(comicNumberLists.get(i).isComicLastRead()){
-                            comicPageUrl = comicNumberLists.get(i).getComicPagesUrl();
-                        }
-                    }
-                    Intent intent = new Intent(ComicNumberActivity.this,ComicReadActivity.class);
-                    intent.putExtra(ComicFragment.COMICREADURL,comicPageUrl);
-                    startActivity(intent);
-                }
-            }
-        });*/
-
     }
 
     @Override
@@ -328,5 +312,116 @@ public class ComicNumberActivity extends AppCompatActivity {
                 }
             }
         }.start();
+    }
+
+    public static class DownloadDialogFragment extends DialogFragment implements SelectComicDownloadAdapter.OnDownloadComicListener,View.OnClickListener{
+
+        private RecyclerView recyclerViewSelectDownloadComic;
+        private TextView tvSelectDownloadPositive;
+        private SelectComicDownloadAdapter adapter;
+
+        private List<DownloadComicSelectList> selectLists = new ArrayList<>();
+        private String comicName;
+        private String comicImageUrl;
+        private String comicId;
+
+        public DownloadDialogFragment(){
+            super();
+        }
+
+        @Override
+        public void onCreate(@Nullable Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            Bundle bundle = this.getArguments();
+            initData(bundle);
+            initList();
+            List<DownloadComic> downloadComicList = DataSupport.where("comicId=?",comicId).find(DownloadComic.class);
+            for(DownloadComic item:downloadComicList){
+                for(DownloadComicSelectList select:selectLists){
+                    if(item.getComicPagesId().equals(select.getComicPageId())){
+                        select.setDownload(true);
+                        break;
+                    }
+                }
+            }
+            adapter = new SelectComicDownloadAdapter(this,selectLists);
+        }
+
+        private void initData(Bundle bundle){
+            comicName = bundle.getString("comicName");
+            comicImageUrl = bundle.getString("comicImageUrl");
+            comicId = bundle.getString("comicId");
+        }
+        private void initList(){
+            for(ComicNumberList item:comicNumberLists){
+                DownloadComicSelectList selectList = new DownloadComicSelectList();
+                selectList.setComicPages(item.getComicPages());
+                selectList.setComicUrl(item.getComicPagesUrl());
+                selectList.setComicPageId(item.getComicPagesUrl().substring(item.getComicPagesUrl().lastIndexOf("/")+1,item.getComicPagesUrl().lastIndexOf(".")));
+                selectList.setSelect(false);
+                selectList.setDownload(false);
+                selectLists.add(selectList);
+            }
+        }
+
+        @Nullable
+        @Override
+        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.model_dialog_fragment_comic_select_download,container,false);
+            recyclerViewSelectDownloadComic = (RecyclerView) view.findViewById(R.id.recycler_view_comic_select_download);
+            tvSelectDownloadPositive = (TextView) view.findViewById(R.id.tv_comic_select_download_positive);
+            tvSelectDownloadPositive.setOnClickListener(this);
+            GridLayoutManager layoutManager = new GridLayoutManager(getActivity(),3);
+            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            recyclerViewSelectDownloadComic.setLayoutManager(layoutManager);
+            recyclerViewSelectDownloadComic.setAdapter(adapter);
+            return view;
+        }
+
+        @Override
+        public void itemOnClick(View view, int position) {
+            if(!selectLists.get(position).isSelect()){
+            view.setSelected(true);
+            selectLists.get(position).setSelect(true);
+            }else {
+                view.setSelected(false);
+                selectLists.get(position).setSelect(false);
+            }
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()){
+                case R.id.tv_comic_select_download_positive:
+                    for(DownloadComicSelectList list:selectLists){
+                        if(list.isSelect()){
+                            DownloadComic comic = new DownloadComic(comicName,list.getComicUrl(),list.getComicPages(),comicImageUrl,list.getComicPageId(),comicId);
+                            //comic.setComicName(comicName);
+                            //comic.setComicId(comicId);
+                            //comic.setComicImageUrl(comicImageUrl);
+                            //comic.setDownloadFinish(false);
+                            //comic.setAllPages(0);
+                            //comic.setComicPages(list.getComicPages());
+                            //comic.setComicPagesId(list.getComicPageId());
+                            //comic.setComicUrl(list.getComicUrl());
+                            //comic.setCurrentPages(0);
+
+                            Log.d("comicName",comicName);
+                            Log.d("comicId",comicId);
+                            Log.d("comicImageUrl",comicImageUrl);
+                            Log.d("comicPages",list.getComicPages());
+                            Log.d("comicPageId",list.getComicPageId());
+                            Log.d("comicUrl",list.getComicUrl());
+                            comic.save();
+                        }
+                    }
+                    Intent intent = new Intent(getActivity(),DownloadManagerActivity.class);
+                    intent.putExtra("page",3);
+                    getActivity().startActivity(intent);
+
+                    this.dismiss();
+                    break;
+            }
+        }
     }
 }

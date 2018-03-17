@@ -31,6 +31,7 @@ public class LoadImageAsync extends AsyncTask<String, Integer, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... params) {
+        //Log.d("url",params[0]);
         Request request = new Request.Builder().url(params[0]).build();
         Call call = null;
         Response response;

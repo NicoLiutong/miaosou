@@ -33,9 +33,25 @@
         android:title="@string/pay_author"
         app:showAsAction="always"/>
     <item
+        android:id="@+id/image_search"
+        android:icon="@drawable/image_search"
+        android:title="@string/image_search"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/chatting"
         android:icon="@drawable/ic_chatting"
         android:title="@string/chatting"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/setting"
+        android:icon="@drawable/setting"
+        android:title="@string/setting"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/download_manager"
+        android:icon="@drawable/download_manager"
+        android:title="@string/dowmload_manager"
         app:showAsAction="always"/>
     <item
         android:id="@+id/about_author"
@@ -43,8 +59,8 @@
         android:title="@string/about_author"
         app:showAsAction="always"/>
     <item
-        android:id="@+id/about_exit"
-        android:icon="@drawable/ic_menu_exit"
-        android:title="@string/about_exit"
+        android:id="@+id/about_check_updata"
+        android:icon="@drawable/check_updata"
+        android:title="@string/about_check_updata"
         app:showAsAction="always"/>
 </menu>

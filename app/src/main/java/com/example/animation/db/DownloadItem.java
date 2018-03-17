@@ -1,12 +1,10 @@
 package com.example.animation.db;
 
-import org.litepal.crud.DataSupport;
-
 /**
  * Created by 刘通 on 2017/3/2.
  */
 
-public class DownloadItem extends DataSupport{
+public class DownloadItem{
     private String downloadItem;
 
     private String downloadMessage;

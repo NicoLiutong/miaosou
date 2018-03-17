@@ -23,9 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import cn.bmob.v3.okhttp3.Call;
 import cn.bmob.v3.okhttp3.OkHttpClient;
@@ -85,7 +83,7 @@ public class MyScorllView extends ScrollView implements View.OnTouchListener {
     /**
      * 记录所有正在下载或等待下载的任务。
      */
-    private static Set<LoadImageTask> taskCollection;
+    private static List<LoadImageTask> taskCollection;
 
     /**
      * MyScrollView下的直接子布局。
@@ -140,7 +138,7 @@ public class MyScorllView extends ScrollView implements View.OnTouchListener {
     public MyScorllView(Context context, AttributeSet attrs) {
         super(context, attrs);
         imageLoader = ImageLoader.getInstance();
-        taskCollection = new HashSet<LoadImageTask>();
+        taskCollection = new ArrayList<>();
         setOnTouchListener(this);
     }
 
@@ -210,6 +208,12 @@ public class MyScorllView extends ScrollView implements View.OnTouchListener {
             LoadImageTask task = new LoadImageTask(cosplayImageMessages.get(i).getImageId());
             taskCollection.add(task);
             task.execute(cosplayImageMessages.get(i).getImageUrl());
+        }
+    }
+
+    public void isCancelletLoadImages(boolean b){
+        for (LoadImageTask item : taskCollection) {
+            item.cancel(b);
         }
     }
 

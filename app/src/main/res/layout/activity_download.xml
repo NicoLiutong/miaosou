@@ -42,63 +42,8 @@
 
 </LinearLayout>
     <RelativeLayout
-
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/download_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        />
-
-    <LinearLayout
-        android:id="@+id/button_layout"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@+id/return_page"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:text="回头看看"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:background="@color/pink"
-            android:layout_weight="5"/>
-        <TextView
-            android:id="@+id/pages"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="2"
-            android:gravity="center"
-            android:textSize="10sp"/>
-        <Button
-            android:id="@+id/next_page"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:text="继续瞧瞧 (｀･ω･´ )"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:background="@color/blue"
-            android:layout_weight="5"/>
-    </LinearLayout>
-        </LinearLayout>
         <TextView
             android:id="@+id/download_fali"
             android:layout_width="match_parent"
@@ -110,6 +55,24 @@
             android:textSize="20sp"
             android:textColor="@color/gray"
             />
+            <com.scwang.smartrefresh.layout.SmartRefreshLayout
+                android:id="@+id/animation_download_srl"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/animation_download_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/download_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+                <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </com.scwang.smartrefresh.layout.SmartRefreshLayout>
     </RelativeLayout>
 </LinearLayout>
 

@@ -45,7 +45,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.MyDown
     @Override
     public void onBindViewHolder(MyDownloadHolder holder, int position) {
         DownloadItem downloadItem = mDownloadItem.get(position);
-        holder.downloadNumberText.setText(downloadItem.getDownloadNumber());
+        //holder.downloadNumberText.setText(downloadItem.getDownloadNumber());
         holder.downloadItemText.setText(downloadItem.getDownloadItem());
         holder.downloadMessageText.setText(downloadItem.getDownloadMessage());
         
@@ -57,7 +57,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.MyDown
     }
 
     class MyDownloadHolder extends RecyclerView.ViewHolder {
-        TextView downloadNumberText;
+        //TextView downloadNumberText;
 
         TextView downloadItemText;
 
@@ -68,7 +68,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.MyDown
         public MyDownloadHolder(View itemView) {
             super(itemView);
             downloadView = itemView;
-            downloadNumberText = (TextView) itemView.findViewById(R.id.download_number);
+            //downloadNumberText = (TextView) itemView.findViewById(R.id.download_number);
             downloadItemText = (TextView) itemView.findViewById(R.id.download_item);
             downloadMessageText = (TextView) itemView.findViewById(R.id.download_message);
 

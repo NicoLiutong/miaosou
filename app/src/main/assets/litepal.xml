@@ -2,13 +2,15 @@
 <litepal>
     <dbname value="animation" ></dbname>
 
-    <version value="4" ></version>
+    <version value="16" ></version>
 
     <list>
         <mapping class="com.example.animation.db.AnimationItem"/>
-        <mapping class="com.example.animation.db.DownloadItem"/>
-        <mapping class="com.example.animation.db.HistorySearch"/>
         <mapping class="com.example.animation.db.ComicItem"/>
+        <mapping class="com.example.animation.db.HistorySearch"/>
         <mapping class="com.example.animation.db.ComicMessageItem"/>
+        <mapping class="com.example.animation.db.DownloadComic"/>
+        <mapping class="com.example.animation.db.ReadNowComic"/>
+        <mapping class="com.example.animation.db.PictureSaveManager"/>
     </list>
 </litepal>

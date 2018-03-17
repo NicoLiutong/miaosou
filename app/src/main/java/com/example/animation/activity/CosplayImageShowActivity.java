@@ -4,11 +4,13 @@ import android.Manifest;
 import android.app.WallpaperManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,6 +26,9 @@ import com.example.animation.Util.ImageLoader;
 import com.example.animation.Util.SavePicture;
 import com.example.animation.adapter.CosplayImageShowViewPagerAdapter;
 import com.example.animation.db.CosplayImageMessage;
+import com.example.animation.db.PictureSaveManager;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.File;
 import java.io.IOException;
@@ -44,6 +49,7 @@ public class CosplayImageShowActivity extends AppCompatActivity  implements View
 
     private String savePictureId;
     private Bitmap savePictureBitmap;
+    private String savePicturePath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +131,12 @@ public class CosplayImageShowActivity extends AppCompatActivity  implements View
                     saveSuccess = savePicture(savePictureBitmap);
                 }
                 if(saveSuccess){
-                    Toast.makeText(this,"图片已存储在 /miaosou/cosplay 文件夹下",Toast.LENGTH_SHORT).show();
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+                    if(DataSupport.where("filePath = ?",savePicturePath).find(PictureSaveManager.class).isEmpty()) {
+                        PictureSaveManager saveManager = new PictureSaveManager(savePicturePath, 2);
+                        saveManager.save();
+                    }
+                    Toast.makeText(this,"图片已存储在"+preferences.getString("cosplayPictureFilepath","sdcard/miaosou/cosplay"),Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(this,"图片保存失败，请检查SD卡读写权限是否开启",Toast.LENGTH_SHORT).show();
                 }
@@ -146,8 +157,10 @@ public class CosplayImageShowActivity extends AppCompatActivity  implements View
         String filepath = null;
         String state = Environment.getExternalStorageState();
         if(Environment.MEDIA_MOUNTED.equals(state)){
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
             filepath = Environment.getExternalStorageDirectory().toString() + File.separator + "miaosou" + File.separator + "cosplay" + File.separator;
-            flag = SavePicture.savePicture(filepath,bitmap,savePictureId,this);
+            savePicturePath = filepath + savePictureId + ".jpg";
+            flag = SavePicture.savePicture(preferences.getString("cosplayPictureFilepath",filepath),bitmap,savePictureId,this);
         }else {
             Toast.makeText(this,"请开启读写SD卡权限",Toast.LENGTH_SHORT).show();
         }

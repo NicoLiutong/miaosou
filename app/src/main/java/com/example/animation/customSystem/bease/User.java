@@ -18,6 +18,16 @@ public class User extends BmobUser {
 
     private String myFavority;
 
+    private String animationFavority;
+
+    public String getAnimationFavority() {
+        return animationFavority;
+    }
+
+    public void setAnimationFavority(String animationFavority) {
+        this.animationFavority = animationFavority;
+    }
+
     public String getMyFavority() {
         return myFavority;
     }

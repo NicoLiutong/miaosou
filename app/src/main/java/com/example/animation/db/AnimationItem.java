@@ -14,11 +14,28 @@ public class AnimationItem extends DataSupport{
 
     private String animationInformationUrl;
 
+    private boolean isFavortiy;
+
     private String downloadUrl;
 
     private String seeOnlineUrl;
 
     private String week;
+
+    public AnimationItem (){
+
+    }
+
+    public AnimationItem(String animationItem,String animationType,String animationInformationUrl,Boolean isFavortiy,String downloadUrl,
+                         String seeOnlineUrl,String week){
+        this.animationItem = animationItem;
+        this.animationType = animationType;
+        this.animationInformationUrl = animationInformationUrl;
+        this.isFavortiy = isFavortiy;
+        this.downloadUrl = downloadUrl;
+        this.seeOnlineUrl = seeOnlineUrl;
+        this.week = week;
+    }
 
     public String getAnimationInformationUrl() {
         return animationInformationUrl;
@@ -42,6 +59,14 @@ public class AnimationItem extends DataSupport{
 
     public void setSeeOnlineUrl(String seeOnlineUrl) {
         this.seeOnlineUrl = seeOnlineUrl;
+    }
+
+    public boolean isFavortiy() {
+        return isFavortiy;
+    }
+
+    public void setFavortiy(boolean favortiy) {
+        isFavortiy = favortiy;
     }
 
     public String getAnimationItem() {

@@ -71,6 +71,7 @@ public class PictureShowActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 try {
+                    //Log.d("url11",pictureWebUrl);
                     Document pictureDocument = Jsoup.connect(pictureWebUrl).timeout(3000).get();
                     switch (type){
                         case "yandere":
@@ -84,7 +85,7 @@ public class PictureShowActivity extends AppCompatActivity {
                             break;
                         case "animation":
                             //pictureUrl ="https://anime-pictures.net" + pictureDocument.select("div").get(11).select("a").get(0).attr("href");
-                            pictureUrl = pictureDocument.select("picture").get(0).select("img").get(0).attr("src");
+                            pictureUrl = "https:" + pictureDocument.select("picture").get(0).select("img").get(0).attr("src");
                             //pictureUrl = pictureDocument.select("source").get(0).attr("srcset").split(".webp")[0];
                             //pictureUrl ="https://anime-pictures.net" + pictureDocument.select("a.download_icon").get(0).attr("href").toString();
                             //pictureUrl = pictureUrl.replace("download_image","get_image");

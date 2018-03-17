@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.example.animation.R;
 import com.example.animation.customSystem.presenter.RegisterPresent;
 import com.example.animation.view.LineEditText;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 import cn.bmob.v3.exception.BmobException;
 
@@ -35,6 +36,18 @@ public class RegisterActivity extends BaseActivity<RegisterView,RegisterPresent>
         txConfirmPassword = (LineEditText) findViewById(R.id.register_confirm_password);
         btRegister = (Button) findViewById(R.id.register_button);
         btRegister.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this,"注册界面");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 
     @Override

@@ -9,13 +9,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.animation.adapter.ComicSearchResultAdapter;
+import com.bumptech.glide.Glide;
 import com.example.animation.R;
+import com.example.animation.adapter.ComicSearchResultAdapter;
 import com.example.animation.db.ComicSearchResultList;
 import com.example.animation.fragments.AnimationFragment;
-import com.example.animation.view.BounceBallView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,6 +26,8 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.litepal.LitePalApplication.getContext;
 
 public class ComicSearchResult extends AppCompatActivity {
 
@@ -135,10 +138,11 @@ public class ComicSearchResult extends AppCompatActivity {
     private void showProgressDialog(){
         if(alertDialogBuilder == null){
             alertDialogBuilder = new AlertDialog.Builder(this);
-            View v = View.inflate(this,R.layout.bounce_ball_view,null);
-            BounceBallView ballView =(BounceBallView) v.findViewById(R.id.bounce_ball);
-            ballView.start();
+            View v = View.inflate(getContext(),R.layout.loading_layout,null);
+            ImageView imageView = (ImageView) v.findViewById(R.id.loading_image);
+            Glide.with(this).load(R.drawable.loading_image).asGif().into(imageView);
             alertDialogBuilder.setView(v);
+            alertDialogBuilder.create();
             //progressDialog.setMessage("正在加载...");
             alertDialogBuilder.setCancelable(false);
         }

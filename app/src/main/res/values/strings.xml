@@ -6,10 +6,13 @@
     <string name="copyright">Copyright © 2015&#045;%d SWUST</string>
     <string name="about_name">Nico</string>
     <string name="about_github">https://github.com/NicoLiutong</string>
+    <string name="image_search">image search</string>
     <string name="about_author">about</string>
+    <string name="setting">setting</string>
+    <string name="dowmload_manager">download manager</string>
     <string name="share">share</string>
     <string name="chatting">chatting</string>
-    <string name="about_exit">exit</string>
+    <string name="about_check_updata">chexkUpdata</string>
     <string name="animation_news">news</string>
     <string name="animation_picture">pictures</string>
     <string name="cosplay_picture">pictures</string>
@@ -43,5 +46,22 @@
     <string name="register_confirm_password">confirm password：</string>
     <string name="register_edit_confirm_password">please input passord again</string>
     <string name="register_register">register</string>
+
+    <string name="search_more">search more</string>
+
+    <string name="app_setting">setting</string>
+    <string name="banckground_setting">background seeting</string>
+    <string name="is_use_network_background">is use network background</string>
+    <string name="use_network_background">use</string>
+    <string name="no_use_network_background">unuse</string>
+    <string name="background_filepath">background filepath</string>
+    <string name="comic_setting">comic</string>
+    <string name="comic_show_style">comic show style</string>
+    <string name="comic_show_one_list">one list</string>
+    <string name="comic_show_three_list">three list</string>
+    <string name="save_filepath">save filepath</string>
+    <string name="background_save_filepath">background save filepath</string>
+    <string name="animation_picture_save_filepath">anination picture save filepath</string>
+    <string name="cosplay_picture_save_filepath">cosplay picture save filepath</string>
 
 </resources>
